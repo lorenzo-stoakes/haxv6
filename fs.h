@@ -1,4 +1,4 @@
-// On-disk file system format. 
+// On-disk file system format.
 // Both the kernel and user programs use this header file.
 
 // Block 0 is unused.
@@ -52,4 +52,3 @@ struct dirent {
   ushort inum;
   char name[DIRSIZ];
 };
-
