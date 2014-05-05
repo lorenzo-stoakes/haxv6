@@ -176,22 +176,12 @@ fs.img: mkfs README.XV6 $(UPROGS)
 
 -include *.d
 
-clean: 
-	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
+clean:
+	rm -f *.log *.ind *.ilg \
 	*.o *.d *.asm *.sym vectors.S bootblock entryother \
 	initcode initcode.out kernel xv6.img fs.img kernelmemfs mkfs \
 	.gdbinit \
 	$(UPROGS)
-
-# make a printout
-FILES = $(shell grep -v '^\#' runoff.list)
-PRINT = runoff.list runoff.spec README.XV6 toc.hdr toc.ftr $(FILES)
-
-xv6.pdf: $(PRINT)
-	./runoff
-	ls -l xv6.pdf
-
-print: xv6.pdf
 
 # run in emulators
 
@@ -260,7 +250,6 @@ dist-test:
 	rm -rf dist-test
 	mkdir dist-test
 	cp dist/* dist-test
-	cd dist-test; $(MAKE) print
 	cd dist-test; $(MAKE) bochs || true
 	cd dist-test; $(MAKE) qemu
 
