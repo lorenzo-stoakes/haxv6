@@ -336,7 +336,6 @@ bad:
   return 0;
 }
 
-//PAGEBREAK!
 // Map user virtual address to kernel address.
 char*
 uva2ka(pde_t *pgdir, char *uva)

@@ -170,6 +170,7 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
+	_scratch\
 
 fs.img: mkfs README.XV6 $(UPROGS)
 	./mkfs fs.img README.XV6 $(UPROGS)
