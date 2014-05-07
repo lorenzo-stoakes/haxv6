@@ -12,7 +12,8 @@ I've written [a guide][xv6_blog] to getting xv6 working on OS X over at [my blog
 ## Exploits
 
 Part of the fun of having a small OS to play with is the ability to explore stuff in more
-detail and ease than would otherwise be possible.
+detail and ease than would otherwise be possible. One of these fun games is playing around with
+security exploits :)
 
 ### Exploit 1
 
