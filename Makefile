@@ -157,6 +157,8 @@ mkfs: mkfs.c fs.h
 UPROGS=\
 	_cat\
 	_echo\
+	_exploit1\
+	_exploited1\
 	_forktest\
 	_grep\
 	_init\
