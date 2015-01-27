@@ -259,6 +259,8 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
+    // Wait for wakeup.
+    hlt();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
