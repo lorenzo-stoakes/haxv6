@@ -5,52 +5,52 @@
 #include "stat.h"
 #include "user.h"
 
-#define N  1000
+#define N 1000
 
 void
 fprintf(int fd, char *s, ...)
 {
-  write(fd, s, strlen(s));
+	write(fd, s, strlen(s));
 }
 
 void
 forktest(void)
 {
-  int n, pid;
+	int n, pid;
 
-  fprintf(1, "fork test\n");
+	fprintf(1, "fork test\n");
 
-  for(n=0; n<N; n++){
-    pid = fork();
-    if(pid < 0)
-      break;
-    if(pid == 0)
-      exit();
-  }
+	for (n = 0; n < N; n++) {
+		pid = fork();
+		if (pid < 0)
+			break;
+		if (pid == 0)
+			exit();
+	}
 
-  if(n == N){
-    fprintf(1, "fork claimed to work N times!\n", N);
-    exit();
-  }
+	if (n == N) {
+		fprintf(1, "fork claimed to work N times!\n", N);
+		exit();
+	}
 
-  for(; n > 0; n--){
-    if(wait() < 0){
-      fprintf(1, "wait stopped early\n");
-      exit();
-    }
-  }
+	for (; n > 0; n--) {
+		if (wait() < 0) {
+			fprintf(1, "wait stopped early\n");
+			exit();
+		}
+	}
 
-  if(wait() != -1){
-    fprintf(1, "wait got too many\n");
-    exit();
-  }
+	if (wait() != -1) {
+		fprintf(1, "wait got too many\n");
+		exit();
+	}
 
-  fprintf(1, "fork test OK\n");
+	fprintf(1, "fork test OK\n");
 }
 
 int
 main(void)
 {
-  forktest();
-  exit();
+	forktest();
+	exit();
 }

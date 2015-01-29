@@ -8,15 +8,15 @@
 // Then sb.nblocks data blocks.
 // Then sb.nlog log blocks.
 
-#define ROOTINO 1  // root i-number
-#define BSIZE 512  // block size
+#define ROOTINO 1	// root i-number
+#define BSIZE 512	// block size
 
 // File system super block
 struct superblock {
-  uint size;         // Size of file system image (blocks)
-  uint nblocks;      // Number of data blocks
-  uint ninodes;      // Number of inodes.
-  uint nlog;         // Number of log blocks
+	uint size;	// Size of file system image (blocks)
+	uint nblocks;	// Number of data blocks
+	uint ninodes;	// Number of inodes.
+	uint nlog;	// Number of log blocks
 };
 
 #define NDIRECT 12
@@ -25,22 +25,22 @@ struct superblock {
 
 // On-disk inode structure
 struct dinode {
-  short type;           // File type
-  short major;          // Major device number (T_DEV only)
-  short minor;          // Minor device number (T_DEV only)
-  short nlink;          // Number of links to inode in file system
-  uint size;            // Size of file (bytes)
-  uint addrs[NDIRECT+1];   // Data block addresses
+	short type;	// File type
+	short major;	// Major device number (T_DEV only)
+	short minor;	// Minor device number (T_DEV only)
+	short nlink;	// Number of links to inode in file system
+	uint size;	// Size of file (bytes)
+	uint addrs[NDIRECT+1];	// Data block addresses
 };
 
 // Inodes per block.
-#define IPB           (BSIZE / sizeof(struct dinode))
+#define IPB (BSIZE / sizeof(struct dinode))
 
 // Block containing inode i
-#define IBLOCK(i)     ((i) / IPB + 2)
+#define IBLOCK(i) ((i) / IPB + 2)
 
 // Bitmap bits per block
-#define BPB           (BSIZE*8)
+#define BPB (BSIZE*8)
 
 // Block containing bit for block b
 #define BBLOCK(b, ninodes) (b/BPB + (ninodes)/IPB + 3)
@@ -49,6 +49,6 @@ struct dinode {
 #define DIRSIZ 14
 
 struct dirent {
-  ushort inum;
-  char name[DIRSIZ];
+	ushort inum;
+	char name[DIRSIZ];
 };
