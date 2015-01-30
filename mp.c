@@ -1,6 +1,8 @@
-// Multiprocessor support
-// Search memory for MP description structures.
-// http://developer.intel.com/design/pentium/datashts/24201606.pdf
+/*
+ * Multiprocessor support
+ * Search memory for MP description structures.
+ * http:developer.intel.comdesignpentiumdatashts24201606.pdf
+ */
 
 #include "types.h"
 #include "defs.h"
@@ -34,7 +36,7 @@ sum(uchar *addr, int len)
 	return sum;
 }
 
-// Look for an MP structure in the len bytes at addr.
+/* Look for an MP structure in the len bytes at addr. */
 static struct mp*
 mpsearch1(uint a, int len)
 {
@@ -48,11 +50,13 @@ mpsearch1(uint a, int len)
 	return 0;
 }
 
-// Search for the MP Floating Pointer Structure, which according to the
-// spec is in one of the following three locations:
-// 1) in the first KB of the EBDA;
-// 2) in the last KB of system base memory;
-// 3) in the BIOS ROM between 0xE0000 and 0xFFFFF.
+/*
+ * Search for the MP Floating Pointer Structure, which according to the
+ * spec is in one of the following three locations:
+ * 1) in the first KB of the EBDA;
+ * 2) in the last KB of system base memory;
+ * 3) in the BIOS ROM between 0xE0000 and 0xFFFFF.
+ */
 static struct mp*
 mpsearch(void)
 {
@@ -72,11 +76,13 @@ mpsearch(void)
 	return mpsearch1(0xF0000, 0x10000);
 }
 
-// Search for an MP configuration table. For now,
-// don't accept the default configurations (physaddr == 0).
-// Check for correct signature, calculate the checksum and,
-// if correct, check the version.
-// To do: check extended table checksum.
+/*
+ * Search for an MP configuration table. For now,
+ * don't accept the default configurations (physaddr == 0).
+ * Check for correct signature, calculate the checksum and,
+ * if correct, check the version.
+ * To do: check extended table checksum.
+ */
 static struct mpconf*
 mpconfig(struct mp **pmp)
 {
@@ -140,7 +146,7 @@ mpinit(void)
 		}
 	}
 	if (!ismp) {
-		// Didn't like what we found; fall back to no MP.
+		/* Didn't like what we found; fall back to no MP. */
 		ncpu = 1;
 		lapic = 0;
 		ioapicid = 0;
@@ -148,9 +154,11 @@ mpinit(void)
 	}
 
 	if (mp->imcrp) {
-		// Bochs doesn't support IMCR, so this doesn't run on Bochs.
-		// But it would on real hardware.
-		outb(0x22, 0x70); // Select IMCR
-		outb(0x23, inb(0x23) | 1); // Mask external interrupts.
+		/*
+		 * Bochs doesn't support IMCR, so this doesn't run on Bochs.
+		 * But it would on real hardware.
+		 */
+		outb(0x22, 0x70); /* Select IMCR */
+		outb(0x23, inb(0x23) | 1); /* Mask external interrupts. */
 	}
 }

@@ -1,24 +1,26 @@
-// Buffer cache.
-//
-// The buffer cache is a linked list of buf structures holding
-// cached copies of disk block contents. Caching disk blocks
-// in memory reduces the number of disk reads and also provides
-// a synchronization point for disk blocks used by multiple processes.
-//
-// Interface:
-// * To get a buffer for a particular disk block, call bread.
-// * After changing buffer data, call bwrite to write it to disk.
-// * When done with the buffer, call brelse.
-// * Do not use the buffer after calling brelse.
-// * Only one process at a time can use a buffer,
-//   so do not keep them longer than necessary.
-//
-// The implementation uses three state flags internally:
-// * B_BUSY: the block has been returned from bread
-//           and has not been passed back to brelse.
-// * B_VALID: the buffer data has been read from the disk.
-// * B_DIRTY: the buffer data has been modified
-//            and needs to be written to disk.
+/*
+ * Buffer cache.
+ *
+ * The buffer cache is a linked list of buf structures holding
+ * cached copies of disk block contents. Caching disk blocks
+ * in memory reduces the number of disk reads and also provides
+ * a synchronization point for disk blocks used by multiple processe
+ *
+ * Interface:
+ * - To get a buffer for a particular disk block, call bread.
+ * - After changing buffer data, call bwrite to write it to disk.
+ * - When done with the buffer, call brelse.
+ * - Do not use the buffer after calling brelse.
+ * - Only one process at a time can use a buffer,
+ *   so do not keep them longer than necessary.
+ *
+ * The implementation uses three state flags internally:
+ * - B_BUSY: the block has been returned from bread
+ *           and has not been passed back to brelse.
+ * - B_VALID: the buffer data has been read from the disk.
+ * - B_DIRTY: the buffer data has been modified
+ *            and needs to be written to disk.
+ */
 
 #include "types.h"
 #include "defs.h"
@@ -30,8 +32,10 @@ struct {
 	struct spinlock lock;
 	struct buf buf[NBUF];
 
-	// Linked list of all buffers, through prev/next.
-	// head.next is most recently used.
+	/*
+	 * Linked list of all buffers, through prev/next.
+	 * head.next is most recently used.
+	 */
 	struct buf head;
 } bcache;
 
@@ -42,7 +46,7 @@ binit(void)
 
 	initlock(&bcache.lock, "bcache");
 
-	// Create linked list of buffers
+	/* Create linked list of buffers */
 	bcache.head.prev = &bcache.head;
 	bcache.head.next = &bcache.head;
 	for (b = bcache.buf; b < bcache.buf+NBUF; b++) {
@@ -54,9 +58,11 @@ binit(void)
 	}
 }
 
-// Look through buffer cache for sector on device dev.
-// If not found, allocate fresh block.
-// In either case, return B_BUSY buffer.
+/*
+ * Look through buffer cache for sector on device dev.
+ * If not found, allocate fresh block.
+ * In either case, return B_BUSY buffer.
+ */
 static struct buf*
 bget(uint dev, uint sector)
 {
@@ -65,7 +71,7 @@ bget(uint dev, uint sector)
 	acquire(&bcache.lock);
 
 loop:
-	// Is the sector already cached?
+	/* Is the sector already cached? */
 	for (b = bcache.head.next; b != &bcache.head; b = b->next) {
 		if (b->dev == dev && b->sector == sector) {
 			if (!(b->flags & B_BUSY)) {
@@ -78,7 +84,7 @@ loop:
 		}
 	}
 
-	// Not cached; recycle some non-busy and clean buffer.
+	/* Not cached; recycle some non-busy and clean buffer. */
 	for (b = bcache.head.prev; b != &bcache.head; b = b->prev) {
 		if ((b->flags & B_BUSY) == 0 && (b->flags & B_DIRTY) == 0) {
 			b->dev = dev;
@@ -91,7 +97,7 @@ loop:
 	panic("bget: no buffers");
 }
 
-// Return a B_BUSY buf with the contents of the indicated disk sector.
+/* Return a B_BUSY buf with the contents of the indicated disk sector. */
 struct buf*
 bread(uint dev, uint sector)
 {
@@ -103,7 +109,7 @@ bread(uint dev, uint sector)
 	return b;
 }
 
-// Write b's contents to disk.	Must be B_BUSY.
+/* Write b's contents to disk.	Must be B_BUSY. */
 void
 bwrite(struct buf *b)
 {
@@ -113,8 +119,10 @@ bwrite(struct buf *b)
 	iderw(b);
 }
 
-// Release a B_BUSY buffer.
-// Move to the head of the MRU list.
+/*
+ * Release a B_BUSY buffer.
+ * Move to the head of the MRU list.
+ */
 void
 brelse(struct buf *b)
 {

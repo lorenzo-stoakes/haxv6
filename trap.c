@@ -8,9 +8,9 @@
 #include "traps.h"
 #include "spinlock.h"
 
-// Interrupt descriptor table (shared by all CPUs).
+/* Interrupt descriptor table (shared by all CPUs). */
 struct gatedesc idt[256];
-extern uint vectors[];	// in vectors.S: array of 256 entry pointers
+extern uint vectors[];	/* in vectors.S: array of 256 entry pointers */
 struct spinlock tickslock;
 uint ticks;
 
@@ -60,7 +60,7 @@ trap(struct trapframe *tf)
 		lapiceoi();
 		break;
 	case T_IRQ0 + IRQ_IDE+1:
-		// Bochs generates spurious IDE1 interrupts.
+		/* Bochs generates spurious IDE1 interrupts. */
 		break;
 	case T_IRQ0 + IRQ_KBD:
 		kbdintr();
@@ -79,12 +79,12 @@ trap(struct trapframe *tf)
 
 	default:
 		if (proc == 0 || (tf->cs&3) == 0) {
-			// In kernel, it must be our mistake.
+			/* In kernel, it must be our mistake. */
 			cprintf("unexpected trap %d from cpu %d eip %x (cr2=0x%x)\n",
 				tf->trapno, cpu->id, tf->eip, rcr2());
 			panic("trap");
 		}
-		// In user space, assume process misbehaved.
+		/* In user space, assume process misbehaved. */
 		cprintf("pid %d %s: trap %d err %d on cpu %d "
 			"eip 0x%x addr 0x%x--kill proc\n",
 			proc->pid, proc->name, tf->trapno, tf->err, cpu->id, tf->eip,
@@ -92,18 +92,22 @@ trap(struct trapframe *tf)
 		proc->killed = 1;
 	}
 
-	// Force process exit if it has been killed and is in user space.
-	// (If it is still executing in the kernel, let it keep running
-	// until it gets to the regular system call return.)
+	/*
+	 * Force process exit if it has been killed and is in user space.
+	 * (If it is still executing in the kernel, let it keep running
+	 * until it gets to the regular system call return.)
+	 */
 	if (proc && proc->killed && (tf->cs&3) == DPL_USER)
 		exit();
 
-	// Force process to give up CPU on clock tick.
-	// If interrupts were on while locks held, would need to check nlock.
+	/*
+	 * Force process to give up CPU on clock tick.
+	 * If interrupts were on while locks held, would need to check nlock.
+	 */
 	if (proc && proc->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER)
 		yield();
 
-	// Check if the process has been killed since we yielded
+	/* Check if the process has been killed since we yielded */
 	if (proc && proc->killed && (tf->cs&3) == DPL_USER)
 		exit();
 }

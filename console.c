@@ -1,6 +1,8 @@
-// Console input and output.
-// Input is from the keyboard or serial port.
-// Output is written to the screen and serial port.
+/*
+ * Console input and output.
+ * Input is from the keyboard or serial port.
+ * Output is written to the screen and serial port.
+ */
 
 #include "types.h"
 #include "defs.h"
@@ -48,7 +50,7 @@ printint(int xx, int base, int sign)
 		consputc(buf[i]);
 }
 
-// Print to the console. only understands %d, %x, %p, %s.
+/* Print to the console. only understands %d, %x, %p, %s. */
 void
 cprintf(char *fmt, ...)
 {
@@ -90,7 +92,7 @@ cprintf(char *fmt, ...)
 			consputc('%');
 			break;
 		default:
-			// Print unknown % sequence to draw attention.
+			/* Print unknown % sequence to draw attention. */
 			consputc('%');
 			consputc(c);
 			break;
@@ -115,21 +117,21 @@ panic(char *s)
 	getcallerpcs(&s, pcs);
 	for (i = 0; i < 10; i++)
 		cprintf(" %p", pcs[i]);
-	panicked = 1; // freeze other CPU
+	panicked = 1; /* freeze other CPU */
 	for (;;)
 		;
 }
 
 #define BACKSPACE 0x100
 #define CRTPORT 0x3d4
-static ushort *crt = (ushort *)P2V(0xb8000); // CGA memory
+static ushort *crt = (ushort *)P2V(0xb8000); /* CGA memory */
 
 static void
 cgaputc(int c)
 {
 	int pos;
 
-	// Cursor position: col + 80*row.
+	/* Cursor position: col + 80*row. */
 	outb(CRTPORT, 14);
 	pos = inb(CRTPORT+1) << 8;
 	outb(CRTPORT, 15);
@@ -141,9 +143,9 @@ cgaputc(int c)
 		if (pos > 0)
 			--pos;
 	} else
-		crt[pos++] = (c&0xff) | 0x0700;	// black on white
+		crt[pos++] = (c&0xff) | 0x0700;	/* black on white */
 
-	if ((pos / 80) >= 24) { // Scroll up.
+	if ((pos / 80) >= 24) { /* Scroll up. */
 		memmove(crt, crt+80, sizeof(crt[0])*23*80);
 		pos -= 80;
 		memset(crt+pos, 0, sizeof(crt[0])*(24*80 - pos));
@@ -176,12 +178,12 @@ consputc(int c)
 struct {
 	struct spinlock lock;
 	char buf[INPUT_BUF];
-	uint r;	// Read index
-	uint w;	// Write index
-	uint e;	// Edit index
+	uint r;	/* Read index */
+	uint w;	/* Write index */
+	uint e;	/* Edit index */
 } input;
 
-#define C(x) ((x)-'@') // Control-x
+#define C(x) ((x)-'@') /* Control-x */
 
 void
 consoleintr(int (*getc)(void))
@@ -191,17 +193,17 @@ consoleintr(int (*getc)(void))
 	acquire(&input.lock);
 	while ((c = getc()) >= 0) {
 		switch (c) {
-		case C('P'): // Process listing.
+		case C('P'): /* Process listing. */
 			procdump();
 			break;
-		case C('U'): // Kill line.
+		case C('U'): /* Kill line. */
 			while (input.e != input.w &&
-						input.buf[(input.e-1) % INPUT_BUF] != '\n') {
+			       input.buf[(input.e-1) % INPUT_BUF] != '\n') {
 				input.e--;
 				consputc(BACKSPACE);
 			}
 			break;
-		case C('H'): case '\x7f': // Backspace
+		case C('H'): case '\x7f': /* Backspace */
 			if (input.e != input.w) {
 				input.e--;
 				consputc(BACKSPACE);
@@ -242,10 +244,12 @@ consoleread(struct inode *ip, char *dst, int n)
 			sleep(&input.r, &input.lock);
 		}
 		c = input.buf[input.r++ % INPUT_BUF];
-		if (c == C('D')) { // EOF
+		if (c == C('D')) { /* EOF */
 			if (n < target) {
-				// Save ^D for next time, to make sure
-				// caller gets a 0-byte result.
+				/*
+				 * Save ^D for next time, to make sure
+				 * caller gets a 0-byte result.
+				 */
 				input.r--;
 			}
 			break;

@@ -1,4 +1,4 @@
-// init: The initial user-level program
+/* init: The initial user-level program */
 
 #include "types.h"
 #include "stat.h"
@@ -16,8 +16,8 @@ main(void)
 		mknod("console", 1, 1);
 		open("console", O_RDWR);
 	}
-	dup(0);	// stdout
-	dup(0);	// stderr
+	dup(0);	/* stdout */
+	dup(0);	/* stderr */
 
 	for (;;) {
 		fprintf(1, "init: starting sh\n");

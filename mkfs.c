@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <assert.h>
 
-#define stat xv6_stat // avoid clash with host struct stat
+#define stat xv6_stat /* avoid clash with host struct stat */
 #include "types.h"
 #include "fs.h"
 #include "stat.h"
@@ -34,7 +34,7 @@ void rsect(uint sec, void *buf);
 uint ialloc(ushort type);
 void iappend(uint inum, void *p, int n);
 
-// convert to intel byte order
+/* convert to intel byte order */
 ushort
 xshort(ushort x)
 {
@@ -86,7 +86,7 @@ main(int argc, char *argv[])
 	}
 
 	sb.size = xint(size);
-	sb.nblocks = xint(nblocks); // so whole disk is size sectors
+	sb.nblocks = xint(nblocks); /* so whole disk is size sectors */
 	sb.ninodes = xint(ninodes);
 	sb.nlog = xint(nlog);
 
@@ -127,10 +127,12 @@ main(int argc, char *argv[])
 			exit(1);
 		}
 
-		// Skip leading _ in name when writing to file system.
-		// The binaries are named _rm, _cat, etc. to keep the
-		// build operating system from trying to execute them
-		// in place of system binaries like rm and cat.
+		/*
+		 * Skip leading _ in name when writing to file system.
+		 * The binaries are named _rm, _cat, etc. to keep the
+		 * build operating system from trying to execute them
+		 * in place of system binaries like rm and cat.
+		 */
 		if (argv[i][0] == '_')
 			++argv[i];
 
@@ -147,7 +149,7 @@ main(int argc, char *argv[])
 		close(fd);
 	}
 
-	// fix size of root inode dir
+	/* fix size of root inode dir */
 	rinode(rootino, &din);
 	off = xint(din.size);
 	off = ((off/BSIZE) + 1) * BSIZE;
@@ -274,11 +276,11 @@ iappend(uint inum, void *xp, int n)
 			x = xint(din.addrs[fbn]);
 		} else {
 			if (xint(din.addrs[NDIRECT]) == 0) {
-				// printf("allocate indirect block\n");
+				/* printf("allocate indirect block\n"); */
 				din.addrs[NDIRECT] = xint(freeblock++);
 				usedblocks++;
 			}
-			// printf("read indirect block\n");
+			/* printf("read indirect block\n"); */
 			rsect(xint(din.addrs[NDIRECT]), (char *)indirect);
 			if (indirect[fbn - NDIRECT] == 0) {
 				indirect[fbn - NDIRECT] = xint(freeblock++);

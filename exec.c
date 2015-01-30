@@ -23,7 +23,7 @@ exec(char *path, char **argv)
 	ilock(ip);
 	pgdir = 0;
 
-	// Check ELF header
+	/* Check ELF header */
 	if (readi(ip, (char *)&elf, 0, sizeof(elf)) < sizeof(elf))
 		goto bad;
 	if (elf.magic != ELF_MAGIC)
@@ -32,7 +32,7 @@ exec(char *path, char **argv)
 	if ((pgdir = setupkvm()) == 0)
 		goto bad;
 
-	// Load program into memory.
+	/* Load program into memory. */
 	sz = 0;
 	for (i = 0, off = elf.phoff; i < elf.phnum; i++, off += sizeof(ph)) {
 		if (readi(ip, (char *)&ph, off, sizeof(ph)) != sizeof(ph))
@@ -49,15 +49,17 @@ exec(char *path, char **argv)
 	iunlockput(ip);
 	ip = 0;
 
-	// Allocate two pages at the next page boundary.
-	// Make the first inaccessible.	Use the second as the user stack.
+	/*
+	 * Allocate two pages at the next page boundary.
+	 * Make the first inaccessible.	Use the second as the user stack.
+	 */
 	sz = PGROUNDUP(sz);
 	if ((sz = allocuvm(pgdir, sz, sz + 2*PGSIZE)) == 0)
 		goto bad;
 	clearpteu(pgdir, (char *)(sz - 2*PGSIZE));
 	sp = sz;
 
-	// Push argument strings, prepare rest of stack in ustack.
+	/* Push argument strings, prepare rest of stack in ustack. */
 	for (argc = 0; argv[argc]; argc++) {
 		if (argc >= MAXARG)
 			goto bad;
@@ -68,25 +70,25 @@ exec(char *path, char **argv)
 	}
 	ustack[3+argc] = 0;
 
-	ustack[0] = 0xffffffff;	// fake return PC
+	ustack[0] = 0xffffffff;	/* fake return PC */
 	ustack[1] = argc;
-	ustack[2] = sp - (argc+1)*4;	// argv pointer
+	ustack[2] = sp - (argc+1)*4;	/* argv pointer */
 
 	sp -= (3+argc+1) * 4;
 	if (copyout(pgdir, sp, ustack, (3+argc+1)*4) < 0)
 		goto bad;
 
-	// Save program name for debugging.
+	/* Save program name for debugging. */
 	for (last = s = path; *s; s++)
 		if (*s == '/')
 			last = s+1;
 	safestrcpy(proc->name, last, sizeof(proc->name));
 
-	// Commit to the user image.
+	/* Commit to the user image. */
 	oldpgdir = proc->pgdir;
 	proc->pgdir = pgdir;
 	proc->sz = sz;
-	proc->tf->eip = elf.entry; // main
+	proc->tf->eip = elf.entry; /* main */
 	proc->tf->esp = sp;
 	switchuvm(proc);
 	freevm(oldpgdir);

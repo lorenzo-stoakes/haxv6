@@ -13,7 +13,7 @@ char name[3];
 char *echoargv[] = { "echo", "ALL", "TESTS", "PASSED", 0 };
 int stdout = 1;
 
-// simple file system tests
+/* simple file system tests */
 
 void
 opentest(void)
@@ -200,7 +200,7 @@ exectest(void)
 	}
 }
 
-// simple fork and pipe read/write
+/* simple fork and pipe read/write */
 
 void
 pipe1(void)
@@ -254,7 +254,7 @@ pipe1(void)
 	fprintf(1, "pipe1 ok\n");
 }
 
-// meant to be run w/ at most two CPUs
+/* meant to be run w/ at most two CPUs */
 void
 preempt(void)
 {
@@ -300,7 +300,7 @@ preempt(void)
 	fprintf(1, "preempt ok\n");
 }
 
-// try to find any races between exit and wait
+/* try to find any races between exit and wait */
 void
 exitwait(void)
 {
@@ -357,10 +357,12 @@ mem(void)
 	}
 }
 
-// More file system tests
+/* More file system tests */
 
-// two processes write to the same file descriptor
-// is the offset shared? does inode locking work?
+/*
+ * two processes write to the same file descriptor
+ * is the offset shared? does inode locking work?
+ */
 void
 sharedfd(void)
 {
@@ -412,8 +414,10 @@ sharedfd(void)
 	}
 }
 
-// two processes write two different files at the same
-// time, to test block allocation.
+/*
+ * two processes write two different files at the same
+ * time, to test block allocation.
+ */
 void
 twofiles(void)
 {
@@ -476,7 +480,7 @@ twofiles(void)
 	fprintf(1, "twofiles ok\n");
 }
 
-// two processes create and delete different files in same directory
+/* two processes create and delete different files in same directory */
 void
 createdelete(void)
 {
@@ -554,7 +558,7 @@ createdelete(void)
 	fprintf(1, "createdelete ok\n");
 }
 
-// can I unlink a file and still read it?
+/* can I unlink a file and still read it? */
 void
 unlinkread(void)
 {
@@ -662,7 +666,7 @@ linktest(void)
 	fprintf(1, "linktest ok\n");
 }
 
-// test concurrent create/link/unlink of the same file
+/* test concurrent create/link/unlink of the same file */
 void
 concreate(void)
 {
@@ -754,8 +758,10 @@ concreate(void)
 	fprintf(1, "concreate ok\n");
 }
 
-// another concurrent link/unlink/create test,
-// to look for deadlocks.
+/*
+ * another concurrent linkunlinkcreate test,
+ * to look for deadlocks.
+ */
 void
 linkunlink()
 {
@@ -791,7 +797,7 @@ linkunlink()
 	fprintf(1, "linkunlink ok\n");
 }
 
-// directory that uses indirect blocks
+/* directory that uses indirect blocks */
 void
 bigdir(void)
 {
@@ -1017,7 +1023,7 @@ subdir(void)
 	fprintf(1, "subdir ok\n");
 }
 
-// test writes that are larger than the log.
+/* test writes that are larger than the log. */
 void
 bigwrite(void)
 {
@@ -1110,7 +1116,7 @@ fourteen(void)
 {
 	int fd;
 
-	// DIRSIZ is 14.
+	/* DIRSIZ is 14. */
 	fprintf(1, "fourteen test\n");
 
 	if (mkdir("12345678901234") != 0) {
@@ -1244,7 +1250,7 @@ dirfile(void)
 	fprintf(1, "dir vs file OK\n");
 }
 
-// test that iput() is called at the end of _namei()
+/* test that iput() is called at the end of _namei() */
 void
 iref(void)
 {
@@ -1252,7 +1258,7 @@ iref(void)
 
 	fprintf(1, "empty file name\n");
 
-	// the 50 is NINODE
+	/* the 50 is NINODE */
 	for (i = 0; i < 50 + 1; i++) {
 		if (mkdir("irefd") != 0) {
 			fprintf(1, "mkdir irefd failed\n");
@@ -1278,9 +1284,11 @@ iref(void)
 	fprintf(1, "empty file name OK\n");
 }
 
-// test that fork fails gracefully
-// the forktest binary also does this, but it runs out of proc entries first.
-// inside the bigger usertests binary, we run out of memory first.
+/*
+ * test that fork fails gracefully
+ * the forktest binary also does this, but it runs out of proc entries first.
+ * inside the bigger usertests binary, we run out of memory first.
+ */
 void
 forktest(void)
 {
@@ -1326,7 +1334,7 @@ sbrktest(void)
 	fprintf(stdout, "sbrk test\n");
 	oldbrk = sbrk(0);
 
-	// can one sbrk() less than a page?
+	/* can one sbrk() less than a page? */
 	a = sbrk(0);
 	int i;
 
@@ -1354,7 +1362,7 @@ sbrktest(void)
 		exit();
 	wait();
 
-	// can one grow address space to something big?
+	/* can one grow address space to something big? */
 #define BIG (100*1024*1024)
 	a = sbrk(0);
 	amt = (BIG) - (uint)a;
@@ -1366,7 +1374,7 @@ sbrktest(void)
 	lastaddr = (char *) (BIG-1);
 	*lastaddr = 99;
 
-	// can one de-allocate?
+	/* can one de-allocate? */
 	a = sbrk(0);
 	c = sbrk(-4096);
 	if (c == (char *)0xffffffff) {
@@ -1379,7 +1387,7 @@ sbrktest(void)
 		exit();
 	}
 
-	// can one re-allocate that page?
+	/* can one re-allocate that page? */
 	a = sbrk(0);
 	c = sbrk(4096);
 	if (c != a || sbrk(0) != a + 4096) {
@@ -1387,7 +1395,7 @@ sbrktest(void)
 		exit();
 	}
 	if (*lastaddr == 99) {
-		// should be zero
+		/* should be zero */
 		fprintf(stdout, "sbrk de-allocation didn't really deallocate\n");
 		exit();
 	}
@@ -1399,7 +1407,7 @@ sbrktest(void)
 		exit();
 	}
 
-	// can we read the kernel's memory?
+	/* can we read the kernel's memory? */
 	for (a = (char *)(KERNBASE); a < (char *) (KERNBASE+2000000); a += 50000) {
 		ppid = getpid();
 		pid = fork();
@@ -1415,26 +1423,31 @@ sbrktest(void)
 		wait();
 	}
 
-	// if we run the system out of memory, does it clean up the last
-	// failed allocation?
+	/*
+	 * if we run the system out of memory, does it clean up the last
+	 * failed allocation?
+	 */
 	if (pipe(fds) != 0) {
 		fprintf(1, "pipe() failed\n");
 		exit();
 	}
 	for (i = 0; i < sizeof(pids)/sizeof(pids[0]); i++) {
 		if ((pids[i] = fork()) == 0) {
-			// allocate a lot of memory
+			/* allocate a lot of memory */
 			sbrk(BIG - (uint)sbrk(0));
 			write(fds[1], "x", 1);
-			// sit around until killed
+			/* sit around until killed */
 			for (;;)
 				sleep(1000);
 		}
 		if (pids[i] != -1)
 			read(fds[0], &scratch, 1);
 	}
-	// if those failed allocations freed up the pages they did allocate,
-	// we'll be able to allocate here
+
+	/*
+	 * if those failed allocations freed up the pages they did allocate,
+	 * we'll be able to allocate here
+	 */
 	c = sbrk(4096);
 	for (i = 0; i < sizeof(pids)/sizeof(pids[0]); i++) {
 		if (pids[i] == -1)
@@ -1459,12 +1472,12 @@ validateint(int *p)
 	int res;
 
 	asm("mov %%esp, %%ebx\n\t"
-			"mov %3, %%esp\n\t"
-			"int %2\n\t"
-			"mov %%ebx, %%esp" :
-			"=a" (res) :
-			"a" (SYS_sleep), "n" (T_SYSCALL), "c" (p) :
-			"ebx");
+	    "mov %3, %%esp\n\t"
+	    "int %2\n\t"
+	    "mov %%ebx, %%esp" :
+	    "=a" (res) :
+	    "a" (SYS_sleep), "n" (T_SYSCALL), "c" (p) :
+	    "ebx");
 }
 
 void
@@ -1478,7 +1491,7 @@ validatetest(void)
 
 	for (p = 0; p <= (uint)hi; p += 4096) {
 		if ((pid = fork()) == 0) {
-			// try to crash the kernel by passing in a badly placed integer
+			/* try to crash the kernel by passing in a badly placed integer */
 			validateint((int *)p);
 			exit();
 		}
@@ -1487,7 +1500,7 @@ validatetest(void)
 		kill(pid);
 		wait();
 
-		// try to crash the kernel by passing in a bad string pointer
+		/* try to crash the kernel by passing in a bad string pointer */
 		if (link("nosuchfile", (char *)p) != -1) {
 			fprintf(stdout, "link should not succeed\n");
 			exit();
@@ -1497,7 +1510,7 @@ validatetest(void)
 	fprintf(stdout, "validate ok\n");
 }
 
-// does unintialized data start out zero?
+/* does unintialized data start out zero? */
 char uninit[10000];
 void
 bsstest(void)
@@ -1514,9 +1527,11 @@ bsstest(void)
 	fprintf(stdout, "bss test ok\n");
 }
 
-// does exec return an error if the arguments
-// are larger than a page? or does it write
-// below the stack and wreck the instructions/data?
+/*
+ * does exec return an error if the arguments
+ * are larger than a page? or does it write
+ * below the stack and wreck the instructionsdata?
+ */
 void
 bigargtest(void)
 {
@@ -1551,8 +1566,10 @@ bigargtest(void)
 	unlink("bigarg-ok");
 }
 
-// what happens when the file system runs out of blocks?
-// answer: balloc panics, so this test is not useful.
+/*
+ * what happens when the file system runs out of blocks?
+ * answer: balloc panics, so this test is not useful.
+ */
 void
 fsfull()
 {
@@ -1659,7 +1676,7 @@ main(int argc, char *argv[])
 	dirfile();
 	iref();
 	forktest();
-	bigdir(); // slow
+	bigdir(); /* slow */
 
 	exectest();
 

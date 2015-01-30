@@ -1,10 +1,10 @@
-// Shell.
+/* Shell. */
 
 #include "types.h"
 #include "user.h"
 #include "fcntl.h"
 
-// Parsed command representation
+/* Parsed command representation */
 #define EXEC 1
 #define REDIR 2
 #define PIPE 3
@@ -49,11 +49,11 @@ struct backcmd {
 	struct cmd *cmd;
 };
 
-int fork1(void); // Fork but panics on failure.
+int fork1(void); /* Fork but panics on failure. */
 void panic(char *);
 struct cmd *parsecmd(char *);
 
-// Execute cmd.	Never returns.
+/* Execute cmd. Never returns. */
 void
 runcmd(struct cmd *cmd)
 {
@@ -136,7 +136,7 @@ getcmd(char *buf, int nbuf)
 	fprintf(2, "$ ");
 	memset(buf, 0, nbuf);
 	gets(buf, nbuf);
-	if (buf[0] == 0) // EOF
+	if (buf[0] == 0) /* EOF */
 		return -1;
 	return 0;
 }
@@ -147,7 +147,7 @@ main(void)
 	static char buf[100];
 	int fd;
 
-	// Assumes three file descriptors open.
+	/* Assumes three file descriptors open. */
 	while ((fd = open("console", O_RDWR)) >= 0) {
 		if (fd >= 3) {
 			close(fd);
@@ -155,12 +155,14 @@ main(void)
 		}
 	}
 
-	// Read and run input commands.
+	/* Read and run input commands. */
 	while (getcmd(buf, sizeof(buf)) >= 0) {
 		if (buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' ') {
-			// Clumsy but will have to do for now.
-			// Chdir has no effect on the parent if run in the child.
-			buf[strlen(buf)-1] = 0;	// chop \n
+			/*
+			 * Clumsy but will have to do for now.
+			 * Chdir has no effect on the parent if run in the child.
+			 */
+			buf[strlen(buf)-1] = 0;	/* chop \n */
 			if (chdir(buf+3) < 0)
 				fprintf(2, "cannot cd %s\n", buf+3);
 			continue;
@@ -190,7 +192,7 @@ fork1(void)
 	return pid;
 }
 
-// Constructors
+/* Constructors */
 
 struct cmd*
 execcmd(void)
@@ -257,7 +259,7 @@ backcmd(struct cmd *subcmd)
 	return (struct cmd *)cmd;
 }
 
-// Parsing
+/* Parsing */
 
 char whitespace[] = " \t\r\n\v";
 char symbols[] = "<|>&;()";
@@ -388,7 +390,7 @@ parseredirs(struct cmd *cmd, char **ps, char *es)
 		case '>':
 			cmd = redircmd(cmd, q, eq, O_WRONLY|O_CREATE, 1);
 			break;
-		case '+':	// >>
+		case '+':	/* >> */
 			cmd = redircmd(cmd, q, eq, O_WRONLY|O_CREATE, 1);
 			break;
 		}
@@ -445,7 +447,7 @@ parseexec(char **ps, char *es)
 	return ret;
 }
 
-// NUL-terminate all the counted strings.
+/* NUL-terminate all the counted strings. */
 struct cmd*
 nulterminate(struct cmd *cmd)
 {

@@ -1,6 +1,4 @@
-//
-// File descriptors
-//
+/* File descriptors */
 
 #include "types.h"
 #include "defs.h"
@@ -21,7 +19,7 @@ fileinit(void)
 	initlock(&ftable.lock, "ftable");
 }
 
-// Allocate a file structure.
+/* Allocate a file structure. */
 struct file*
 filealloc(void)
 {
@@ -39,7 +37,7 @@ filealloc(void)
 	return 0;
 }
 
-// Increment ref count for file f.
+/* Increment ref count for file f. */
 struct file*
 filedup(struct file *f)
 {
@@ -51,7 +49,7 @@ filedup(struct file *f)
 	return f;
 }
 
-// Close file f. (Decrement ref count, close when reaches 0.)
+/* Close file f. (Decrement ref count, close when reaches 0.) */
 void
 fileclose(struct file *f)
 {
@@ -78,7 +76,7 @@ fileclose(struct file *f)
 	}
 }
 
-// Get metadata about file f.
+/* Get metadata about file f. */
 int
 filestat(struct file *f, struct stat *st)
 {
@@ -91,7 +89,7 @@ filestat(struct file *f, struct stat *st)
 	return -1;
 }
 
-// Read from file f.
+/* Read from file f. */
 int
 fileread(struct file *f, char *addr, int n)
 {
@@ -111,7 +109,7 @@ fileread(struct file *f, char *addr, int n)
 	panic("fileread");
 }
 
-// Write to file f.
+/* Write to file f. */
 int
 filewrite(struct file *f, char *addr, int n)
 {
@@ -122,12 +120,14 @@ filewrite(struct file *f, char *addr, int n)
 	if (f->type == FD_PIPE)
 		return pipewrite(f->pipe, addr, n);
 	if (f->type == FD_INODE) {
-		// write a few blocks at a time to avoid exceeding
-		// the maximum log transaction size, including
-		// i-node, indirect block, allocation blocks,
-		// and 2 blocks of slop for non-aligned writes.
-		// this really belongs lower down, since writei()
-		// might be writing a device like the console.
+		/*
+		 * write a few blocks at a time to avoid exceeding
+		 * the maximum log transaction size, including
+		 * i-node, indirect block, allocation blocks,
+		 * and 2 blocks of slop for non-aligned writes.
+		 * this really belongs lower down, since writei()
+		 * might be writing a device like the console.
+		 */
 		int max = ((LOGSIZE-1-1-2) / 2) * 512;
 		int i = 0;
 

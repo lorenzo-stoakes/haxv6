@@ -1,6 +1,6 @@
 struct stat;
 
-// system calls
+/* system calls */
 int fork(void);
 int exit(void) __attribute__((noreturn));
 int wait(void);
@@ -23,7 +23,7 @@ char *sbrk(int);
 int sleep(int);
 int uptime(void);
 
-// ulib.c
+/* ulib.c */
 int stat(char*, struct stat*);
 char *strcpy(char*, char*);
 void *memmove(void*, void*, int);
