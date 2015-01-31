@@ -129,10 +129,14 @@ static struct kmap {
 	uint phys_end;
 	int perm;
 } kmap[] = {
-	{ (void *)KERNBASE, 0,             EXTMEM,    PTE_W }, /* I/O space */
-	{ (void *)KERNLINK, V2P(KERNLINK), V2P(data), 0     }, /* kern text+rodata */
-	{ (void *)data,     V2P(data),     PHYSTOP,   PTE_W }, /* kern data+memory */
-	{ (void *)DEVSPACE, DEVSPACE,      0,         PTE_W }, /* more devices */
+	/* I/O space */
+	{ (void *)KERNBASE, 0,             EXTMEM,    PTE_W },
+	/* kern text+rodata */
+	{ (void *)KERNLINK, V2P(KERNLINK), V2P(data), 0     },
+	/* kern data+memory */
+	{ (void *)data,     V2P(data),     PHYSTOP,   PTE_W },
+	/* more devices */
+	{ (void *)DEVSPACE, DEVSPACE,      0,         PTE_W },
 };
 
 /* Set up kernel part of a page table. */

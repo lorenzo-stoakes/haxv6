@@ -254,7 +254,8 @@ wait(void)
 			return -1;
 		}
 
-		/* Wait for children to exit. (See wakeup1 call in proc_exit.) */
+		/* Wait for children to exit. (See wakeup1 call in
+		   proc_exit.) */
 		sleep(proc, &ptable.lock); /*DOC: wait-sleep */
 	}
 }
@@ -299,7 +300,8 @@ scheduler(void)
 
 			/*
 			 * Process is done running for now.
-			 * It should have changed its p->state before coming back.
+			 * It should have changed its p->state before coming
+			 * back.
 			 */
 			proc = 0;
 		}
@@ -308,10 +310,7 @@ scheduler(void)
 	}
 }
 
-/*
- * Enter scheduler. Must hold only ptable.lock
- * and have changed proc->state.
- */
+/* Enter scheduler. Must hold only ptable.lock and have changed proc->state. */
 void
 sched(void)
 {
@@ -476,7 +475,8 @@ procdump(void)
 	for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
 		if (p->state == UNUSED)
 			continue;
-		if (p->state >= 0 && p->state < NELEM(states) && states[p->state])
+		if (p->state >= 0 && p->state < NELEM(states) &&
+		    states[p->state])
 			state = states[p->state];
 		else
 			state = "???";

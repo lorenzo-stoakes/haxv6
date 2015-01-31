@@ -75,7 +75,10 @@ fprintf(int fd, char *fmt, ...)
 			} else if (c == '%') {
 				putc(fd, c);
 			} else {
-				/* Unknown % sequence. Print it to draw attention. */
+				/*
+				 * Unknown % sequence. Print it to draw
+				 * attention.
+				 */
 				putc(fd, '%');
 				putc(fd, c);
 			}

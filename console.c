@@ -214,7 +214,8 @@ consoleintr(int (*getc)(void))
 				c = (c == '\r') ? '\n' : c;
 				input.buf[input.e++ % INPUT_BUF] = c;
 				consputc(c);
-				if (c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF) {
+				if (c == '\n' || c == C('D') ||
+				    input.e == input.r+INPUT_BUF) {
 					input.w = input.e;
 					wakeup(&input.r);
 				}

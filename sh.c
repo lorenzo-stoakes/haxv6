@@ -160,7 +160,8 @@ main(void)
 		if (buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' ') {
 			/*
 			 * Clumsy but will have to do for now.
-			 * Chdir has no effect on the parent if run in the child.
+			 * Chdir has no effect on the parent if run in the
+			 * child.
 			 */
 			buf[strlen(buf)-1] = 0;	/* chop \n */
 			if (chdir(buf+3) < 0)
@@ -296,7 +297,8 @@ gettoken(char **ps, char *es, char **q, char **eq)
 		break;
 	default:
 		ret = 'a';
-		while (s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
+		while (s < es && !strchr(whitespace, *s) &&
+		       !strchr(symbols, *s))
 			s++;
 		break;
 	}

@@ -51,11 +51,13 @@ writetest(void)
 	}
 	for (i = 0; i < 100; i++) {
 		if (write(fd, "aaaaaaaaaa", 10) != 10) {
-			fprintf(stdout, "error: write aa %d new file failed\n", i);
+			fprintf(stdout, "error: write aa %d new file failed\n",
+				i);
 			exit();
 		}
 		if (write(fd, "bbbbbbbbbb", 10) != 10) {
-			fprintf(stdout, "error: write bb %d new file failed\n", i);
+			fprintf(stdout, "error: write bb %d new file failed\n",
+				i);
 			exit();
 		}
 	}
@@ -118,7 +120,8 @@ writetest1(void)
 		i = read(fd, buf, 512);
 		if (i == 0) {
 			if (n == MAXFILE - 1) {
-				fprintf(stdout, "read only %d blocks from big", n);
+				fprintf(stdout, "read only %d blocks from big",
+					n);
 				exit();
 			}
 			break;
@@ -692,7 +695,8 @@ concreate(void)
 		} else {
 			fd = open(file, O_CREATE | O_RDWR);
 			if (fd < 0) {
-				fprintf(1, "concreate create %s failed\n", file);
+				fprintf(1, "concreate create %s failed\n",
+					file);
 				exit();
 			}
 			close(fd);
@@ -712,11 +716,13 @@ concreate(void)
 		if (de.name[0] == 'C' && de.name[2] == '\0') {
 			i = de.name[1] - '0';
 			if (i < 0 || i >= sizeof(fa)) {
-				fprintf(1, "concreate weird file %s\n", de.name);
+				fprintf(1, "concreate weird file %s\n",
+					de.name);
 				exit();
 			}
 			if (fa[i]) {
-				fprintf(1, "concreate duplicate file %s\n", de.name);
+				fprintf(1, "concreate duplicate file %s\n",
+					de.name);
 				exit();
 			}
 			fa[i] = 1;
@@ -1394,7 +1400,8 @@ sbrktest(void)
 	}
 	if (*lastaddr == 99) {
 		/* should be zero */
-		fprintf(stdout, "sbrk de-allocation didn't really deallocate\n");
+		fprintf(stdout,
+			"sbrk de-allocation didn't really deallocate\n");
 		exit();
 	}
 
@@ -1406,7 +1413,8 @@ sbrktest(void)
 	}
 
 	/* can we read the kernel's memory? */
-	for (a = (char *)(KERNBASE); a < (char *) (KERNBASE+2000000); a += 50000) {
+	for (a = (char *)(KERNBASE); a < (char *)(KERNBASE+2000000);
+	     a += 50000) {
 		ppid = getpid();
 		pid = fork();
 		if (pid < 0) {
@@ -1489,7 +1497,10 @@ validatetest(void)
 
 	for (p = 0; p <= (uint)hi; p += 4096) {
 		if ((pid = fork()) == 0) {
-			/* try to crash the kernel by passing in a badly placed integer */
+			/*
+			 * try to crash the kernel by passing in a badly placed
+			 * integer.
+			 */
 			validateint((int *)p);
 			exit();
 		}

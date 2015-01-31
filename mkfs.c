@@ -94,8 +94,9 @@ main(int argc, char *argv[])
 	usedblocks = ninodes / IPB + 3 + bitblocks;
 	freeblock = usedblocks;
 
-	printf("used %d (bit %d ninode %zu) free %u log %u total %d\n", usedblocks,
-	       bitblocks, ninodes/IPB + 1, freeblock, nlog, nblocks+usedblocks+nlog);
+	printf("used %d (bit %d ninode %zu) free %u log %u total %d\n",
+	       usedblocks, bitblocks, ninodes/IPB + 1, freeblock, nlog,
+	       nblocks+usedblocks+nlog);
 
 	assert(nblocks + usedblocks + nlog == size);
 
@@ -285,7 +286,8 @@ iappend(uint inum, void *xp, int n)
 			if (indirect[fbn - NDIRECT] == 0) {
 				indirect[fbn - NDIRECT] = xint(freeblock++);
 				usedblocks++;
-				wsect(xint(din.addrs[NDIRECT]), (char *)indirect);
+				wsect(xint(din.addrs[NDIRECT]),
+				      (char *)indirect);
 			}
 			x = xint(indirect[fbn-NDIRECT]);
 		}

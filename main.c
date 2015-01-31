@@ -39,7 +39,8 @@ main(void)
 	if (!ismp)
 		timerinit(); /* uniprocessor timer */
 	startothers(); /* start other processors */
-	kinit2(P2V(4*1024*1024), P2V(PHYSTOP)); /* must come after startothers() */
+	/* must come after startothers() */
+	kinit2(P2V(4*1024*1024), P2V(PHYSTOP));
 	userinit(); /* first user process */
 	/* Finish setting up this processor in mpmain. */
 	mpmain();

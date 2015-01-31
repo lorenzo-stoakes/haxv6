@@ -53,9 +53,9 @@ entry:
 	# Set up the stack pointer.
 	movl $(stack + KSTACKSIZE), %esp
 
-	# Jump to main(), and switch to executing at high addresses. The indirect
-	# call is needed because the assembler produces a PC-relative instruction
-	# for a direct jump.
+	# Jump to main(), and switch to executing at high addresses. The
+	# indirect call is needed because the assembler produces a PC-relative
+	# instruction for a direct jump.
 	mov $main, %eax
 	jmp *%eax
 
