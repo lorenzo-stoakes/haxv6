@@ -206,13 +206,14 @@ struct gatedesc {
 
 /*
  * Set up a normal interrupttrap gate descriptor.
+ *
  * - istrap: 1 for a trap (= exception) gate, 0 for an interrupt gate.
- *   interrupt gate clears FL_IF, trap gate leaves FL_IF alone
+ *           interrupt gate clears FL_IF, trap gate leaves FL_IF alone.
  * - sel: Code segment selector for interrupttrap handler
  * - off: Offset in code segment for interrupttrap handler
  * - dpl: Descriptor Privilege Level -
- *        the privilege level required for software to invoke
- *        this interrupttrap gate explicitly using an int instruction.
+ *        the privilege level required for software to invoke this interrupttrap
+ *        gate explicitly using an int instruction.
  */
 
 #define SETGATE(gate, istrap, sel, off, d)			\

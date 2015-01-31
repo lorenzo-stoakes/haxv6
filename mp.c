@@ -51,8 +51,9 @@ mpsearch1(uint a, int len)
 }
 
 /*
- * Search for the MP Floating Pointer Structure, which according to the
- * spec is in one of the following three locations:
+ * Search for the MP Floating Pointer Structure, which according to the spec is
+ * in one of the following three locations:
+ *
  * 1) in the first KB of the EBDA;
  * 2) in the last KB of system base memory;
  * 3) in the BIOS ROM between 0xE0000 and 0xFFFFF.
@@ -156,6 +157,7 @@ mpinit(void)
 	if (mp->imcrp) {
 		/*
 		 * Bochs doesn't support IMCR, so this doesn't run on Bochs.
+		 *
 		 * But it would on real hardware.
 		 */
 		outb(0x22, 0x70); /* Select IMCR */

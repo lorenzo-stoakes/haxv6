@@ -28,8 +28,10 @@ pinit(void)
 
 /*
  * Look in the process table for an UNUSED proc.
- * If found, change state to EMBRYO and initialize
- * state required to run in the kernel.
+ *
+ * If found, change state to EMBRYO and initialize state required to run in the
+ * kernel.
+ *
  * Otherwise return 0.
  */
 static struct proc*
@@ -168,8 +170,9 @@ fork(void)
 
 /*
  * Exit the current process. Does not return.
- * An exited process remains in the zombie state
- * until its parent calls wait() to find out it exited.
+ *
+ * An exited process remains in the zombie state until its parent calls wait()
+ * to find out it exited.
  */
 void
 exit(void)
@@ -259,7 +262,8 @@ wait(void)
 /*
  * Per-CPU process scheduler.
  * Each CPU calls scheduler() after setting itself up.
- * Scheduler never returns.  It loops, doing:
+ * Scheduler never returns. It loops, doing:
+ *
  *  - choose a process to run
  *  - swtch to start running that process
  *  - eventually that process transfers control
@@ -283,9 +287,9 @@ scheduler(void)
 				continue;
 
 			/*
-			 * Switch to chosen process. It is the process's job
-			 * to release ptable.lock and then reacquire it
-			 * before jumping back to us.
+			 * Switch to chosen process. It is the process's job to
+			 * release ptable.lock and then reacquire it before
+			 * jumping back to us.
 			 */
 			proc = p;
 			switchuvm(p);
@@ -337,8 +341,8 @@ yield(void)
 }
 
 /*
- * A fork child's very first scheduling by scheduler()
- * will swtch here. "Return" to user space.
+ * A fork child's very first scheduling by scheduler() will swtch here. "Return"
+ * to user space.
  */
 void
 forkret(void)
@@ -350,9 +354,9 @@ forkret(void)
 	if (first) {
 
 		/*
-		 * Some initialization functions must be run in the context
-		 * of a regular process (e.g., they call sleep), and thus cannot
-		 * be run from main().
+		 * Some initialization functions must be run in the context of a
+		 * regular process (e.g., they call sleep), and thus cannot be
+		 * run from main().
 		 */
 		first = 0;
 		initlog();
@@ -375,12 +379,10 @@ sleep(void *chan, struct spinlock *lk)
 		panic("sleep without lk");
 
 	/*
-	 * Must acquire ptable.lock in order to
-	 * change p->state and then call sched.
-	 * Once we hold ptable.lock, we can be
-	 * guaranteed that we won't miss any wakeup
-	 * (wakeup runs with ptable.lock locked),
-	 * so it's okay to release lk.
+	 * Must acquire ptable.lock in order to change p->state and then call
+	 * sched.  Once we hold ptable.lock, we can be guaranteed that we won't
+	 * miss any wakeup (wakeup runs with ptable.lock locked), so it's okay
+	 * to release lk.
 	 */
 	if (lk != &ptable.lock) {	/*DOC: sleeplock0 */
 		acquire(&ptable.lock);	/*DOC: sleeplock1 */
@@ -427,8 +429,8 @@ wakeup(void *chan)
 
 /*
  * Kill the process with the given pid.
- * Process won't exit until it returns
- * to user space (see trap in trap.c).
+ *
+ * Process won't exit until it returns to user space (see trap in trap.c).
  */
 int
 kill(int pid)
@@ -451,7 +453,7 @@ kill(int pid)
 }
 
 /*
- * Print a process listing to console.	For debugging.
+ * Print a process listing to console. (For debugging.)
  * Runs when user types ^P on console.
  * No lock to avoid wedging a stuck machine further.
  */

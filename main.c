@@ -13,8 +13,9 @@ extern char end[]; /* first address after kernel loaded from ELF file */
 
 /*
  * Bootstrap processor starts running C code here.
- * Allocate a real stack and switch to it, first
- * doing some setup required for memory allocator to work.
+ *
+ * Allocate a real stack and switch to it, first doing some setup required for
+ * memory allocator to work.
  */
 int
 main(void)
@@ -89,8 +90,9 @@ startothers(void)
 
 		/*
 		 * Tell entryother.S what stack to use, where to enter, and what
-		 * pgdir to use. We cannot use kpgdir yet, because the AP processor
-		 * is running in low memory, so we use entrypgdir for the APs too.
+		 * pgdir to use. We cannot use kpgdir yet, because the AP
+		 * processor is running in low memory, so we use entrypgdir for
+		 * the APs too.
 		 */
 		stack = kalloc();
 		*(void **)(code-4) = stack + KSTACKSIZE;
@@ -107,8 +109,10 @@ startothers(void)
 
 /*
  * Boot page table used in entry.S and entryother.S.
- * Page directories (and page tables), must start on a page boundary,
- * hence the "__aligned__" attribute.
+ *
+ * Page directories (and page tables), must start on a page boundary, hence the
+ * "__aligned__" attribute.
+ *
  * Use PTE_PS in page directory entry to enable 4Mbyte pages.
  */
 __attribute__((__aligned__(PGSIZE)))

@@ -1,9 +1,8 @@
 # Multiboot header, for multiboot boot loaders like GNU Grub.
 # http://www.gnu.org/software/grub/manual/multiboot/multiboot.html
 #
-# Using GRUB 2, you can boot xv6 from a file stored in a
-# Linux file system by copying kernel or kernelmemfs to /boot
-# and then adding this menu entry:
+# Using GRUB 2, you can boot xv6 from a file stored in a Linux file system by
+# copying kernel or kernelmemfs to /boot and then adding this menu entry:
 #
 # menuentry "xv6" {
 # 	insmod ext2
@@ -19,7 +18,7 @@
 #include "mmu.h"
 #include "param.h"
 
-# Multiboot header.  Data to direct multiboot loader.
+# Multiboot header. Data to direct multiboot loader.
 .p2align 2
 .text
 .globl multiboot_header
@@ -30,9 +29,9 @@ multiboot_header:
 	.long flags
 	.long (-magic-flags)
 
-# By convention, the _start symbol specifies the ELF entry point.
-# Since we haven't set up virtual memory yet, our entry point is
-# the physical address of 'entry'.
+# By convention, the _start symbol specifies the ELF entry point. Since we
+# haven't set up virtual memory yet, our entry point is the physical address of
+# 'entry'.
 .globl _start
 _start = V2P_WO(entry)
 
@@ -54,9 +53,8 @@ entry:
 	# Set up the stack pointer.
 	movl $(stack + KSTACKSIZE), %esp
 
-	# Jump to main(), and switch to executing at
-	# high addresses. The indirect call is needed because
-	# the assembler produces a PC-relative instruction
+	# Jump to main(), and switch to executing at high addresses. The indirect
+	# call is needed because the assembler produces a PC-relative instruction
 	# for a direct jump.
 	mov $main, %eax
 	jmp *%eax

@@ -360,8 +360,8 @@ mem(void)
 /* More file system tests */
 
 /*
- * two processes write to the same file descriptor
- * is the offset shared? does inode locking work?
+ * two processes write to the same file descriptor is the offset shared? does
+ * inode locking work?
  */
 void
 sharedfd(void)
@@ -415,8 +415,8 @@ sharedfd(void)
 }
 
 /*
- * two processes write two different files at the same
- * time, to test block allocation.
+ * two processes write two different files at the same time, to test block
+ * allocation.
  */
 void
 twofiles(void)
@@ -758,10 +758,7 @@ concreate(void)
 	fprintf(1, "concreate ok\n");
 }
 
-/*
- * another concurrent linkunlinkcreate test,
- * to look for deadlocks.
- */
+/* another concurrent linkunlinkcreate test, to look for deadlocks. */
 void
 linkunlink()
 {
@@ -1285,7 +1282,8 @@ iref(void)
 }
 
 /*
- * test that fork fails gracefully
+ * test that fork fails gracefully.
+ *
  * the forktest binary also does this, but it runs out of proc entries first.
  * inside the bigger usertests binary, we run out of memory first.
  */
@@ -1528,9 +1526,8 @@ bsstest(void)
 }
 
 /*
- * does exec return an error if the arguments
- * are larger than a page? or does it write
- * below the stack and wreck the instructionsdata?
+ * does exec return an error if the arguments are larger than a page? or does it
+ * write below the stack and wreck the instructionsdata?
  */
 void
 bigargtest(void)

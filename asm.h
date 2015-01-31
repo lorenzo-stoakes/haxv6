@@ -5,8 +5,8 @@
 	.byte 0, 0, 0, 0
 
 /*
- * The 0xC0 means the limit is in 4096-byte units
- * and (for executable segments) 32-bit mode.
+ * The 0xC0 means the limit is in 4096-byte units and (for executable segments)
+ * 32-bit mode.
  */
 #define SEG_ASM(type, base, lim)				\
 	.word(((lim) >> 12) & 0xffff), ((base) & 0xffff);	\

@@ -121,12 +121,11 @@ filewrite(struct file *f, char *addr, int n)
 		return pipewrite(f->pipe, addr, n);
 	if (f->type == FD_INODE) {
 		/*
-		 * write a few blocks at a time to avoid exceeding
-		 * the maximum log transaction size, including
-		 * i-node, indirect block, allocation blocks,
-		 * and 2 blocks of slop for non-aligned writes.
-		 * this really belongs lower down, since writei()
-		 * might be writing a device like the console.
+		 * write a few blocks at a time to avoid exceeding the maximum
+		 * log transaction size, including i-node, indirect block,
+		 * allocation blocks, and 2 blocks of slop for non-aligned
+		 * writes.  this really belongs lower down, since writei() might
+		 * be writing a device like the console.
 		 */
 		int max = ((LOGSIZE-1-1-2) / 2) * 512;
 		int i = 0;

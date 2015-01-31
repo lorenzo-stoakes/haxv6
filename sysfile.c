@@ -1,7 +1,8 @@
 /*
  * File-system system calls.
- * Mostly argument checking, since we don't trust
- * user code, and calls into file.c and fs.c.
+
+ * Mostly argument checking, since we don't trust user code, and calls into
+ * file.c and fs.c.
  */
 
 #include "types.h"
@@ -15,8 +16,8 @@
 #include "fcntl.h"
 
 /*
- * Fetch the nth word-sized system call argument as a file descriptor
- * and return both the descriptor and the corresponding struct file.
+ * Fetch the nth word-sized system call argument as a file descriptor and return
+ * both the descriptor and the corresponding struct file.
  */
 static int
 argfd(int n, int *pfd, struct file **pf)

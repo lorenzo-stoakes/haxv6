@@ -60,10 +60,9 @@ lapicinit(void)
 	lapicw(SVR, ENABLE | (T_IRQ0 + IRQ_SPURIOUS));
 
 	/*
-	 * The timer repeatedly counts down at bus frequency
-	 * from lapic[TICR] and then issues an interrupt.
-	 * If xv6 cared more about precise timekeeping,
-	 * TICR would be calibrated using an external time source.
+	 * The timer repeatedly counts down at bus frequency from lapic[TICR]
+	 * and then issues an interrupt. If xv6 cared more about precise
+	 * timekeeping, TICR would be calibrated using an external time source.
 	 */
 	lapicw(TDCR, X1);
 	lapicw(TIMER, PERIODIC | (T_IRQ0 + IRQ_TIMER));
@@ -74,8 +73,8 @@ lapicinit(void)
 	lapicw(LINT1, MASKED);
 
 	/*
-	 * Disable performance counter overflow interrupts
-	 * on machines that provide that interrupt entry.
+	 * Disable performance counter overflow interrupts on machines that
+	 * provide that interrupt entry.
 	 */
 	if (((lapic[VER]>>16) & 0xFF) >= 4)
 		lapicw(PCINT, MASKED);
@@ -104,11 +103,10 @@ int
 cpunum(void)
 {
 	/*
-	 * Cannot call cpu when interrupts are enabled:
-	 * result not guaranteed to last long enough to be used!
-	 * Would prefer to panic but even printing is chancy here:
-	 * almost everything, including cprintf and panic, calls cpu,
-	 * often indirectly through acquire and release.
+	 * Cannot call cpu when interrupts are enabled: result not guaranteed to
+	 * last long enough to be used!  Would prefer to panic but even printing
+	 * is chancy here: almost everything, including cprintf and panic, calls
+	 * cpu, often indirectly through acquire and release.
 	 */
 	if (readeflags()&FL_IF) {
 		static int n;
@@ -153,9 +151,9 @@ lapicstartap(uchar apicid, uint addr)
 	ushort *wrv;
 
 	/*
-	 * "The BSP must initialize CMOS shutdown code to 0AH
-	 * and the warm reset vector (DWORD based at 40:67) to point at
-	 * the AP startup code prior to the [universal startup algorithm]."
+	 * "The BSP must initialize CMOS shutdown code to 0AH and the warm reset
+	 * vector (DWORD based at 40:67) to point at the AP startup code prior
+	 * to the [universal startup algorithm]."
 	 */
 	outb(IO_RTC, 0xF); /* offset 0xF is shutdown code */
 	outb(IO_RTC+1, 0x0A);
@@ -175,10 +173,11 @@ lapicstartap(uchar apicid, uint addr)
 
 	/*
 	 * Send startup IPI (twice!) to enter code.
-	 * Regular hardware is supposed to only accept a STARTUP
-	 * when it is in the halted state due to an INIT. So the second
-	 * should be ignored, but it is part of the official Intel algorithm.
-	 * Bochs complains about the second one. Too bad for Bochs.
+	 *
+	 * Regular hardware is supposed to only accept a STARTUP when it is in
+	 * the halted state due to an INIT. So the second should be ignored, but
+	 * it is part of the official Intel algorithm. Bochs complains about the
+	 * second one. Too bad for Bochs.
 	 */
 	for (i = 0; i < 2; i++) {
 		lapicw(ICRHI, apicid<<24);

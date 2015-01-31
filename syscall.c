@@ -10,9 +10,10 @@
 /*
  * User code makes a system call with INT T_SYSCALL.
  * System call number in %eax.
- * Arguments on the stack, from the user call to the C
- * library system call function. The saved user %esp points
- * to a saved program counter, and then the first argument.
+
+ * Arguments on the stack, from the user call to the C library system call
+ * function. The saved user %esp points to a saved program counter, and then the
+ * first argument.
  */
 
 /* Fetch the int at addr from the current process. */
@@ -53,9 +54,9 @@ argint(int n, int *ip)
 }
 
 /*
- * Fetch the nth word-sized system call argument as a pointer
- * to a block of memory of size n bytes. Check that the pointer
- * lies within the process address space.
+ * Fetch the nth word-sized system call argument as a pointer to a block of
+ * memory of size n bytes. Check that the pointer lies within the process
+ * address space.
  */
 int
 argptr(int n, char **pp, int size)
@@ -71,10 +72,10 @@ argptr(int n, char **pp, int size)
 }
 
 /*
- * Fetch the nth word-sized system call argument as a string pointer.
- * Check that the pointer is valid and the string is nul-terminated.
- * (There is no shared writable memory, so the string can't change
- * between this check and being used by the kernel.)
+ * Fetch the nth word-sized system call argument as a string pointer. Check
+ * that the pointer is valid and the string is nul-terminated.  (There is no
+ * shared writable memory, so the string can't change between this check and
+ * being used by the kernel.)
  */
 int
 argstr(int n, char **pp)

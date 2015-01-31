@@ -2,8 +2,7 @@
 #
 #   void swtch(struct context **old, struct context *new);
 #
-# Save current register context in old
-# and then load register context from new.
+# Save current register context in and then load register context from new.
 
 .globl swtch
 swtch:

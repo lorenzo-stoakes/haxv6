@@ -1,7 +1,6 @@
 /*
  * Intel 8253825482C54 Programmable Interval Timer (PIT).
- * Only used on uniprocessors;
- * SMP machines use the local APIC timer.
+ * Only used on uniprocessors; SMP machines use the local APIC timer.
  */
 
 #include "types.h"
@@ -12,9 +11,8 @@
 #define IO_TIMER1 0x040 /* 8253 Timer #1 */
 
 /*
- * Frequency of all three count-down timers;
- * (TIMER_FREQfreq) is the appropriate count
- * to generate a frequency of freq Hz.
+ * Frequency of all three count-down timers; (TIMER_FREQfreq) is the appropriate
+ * count to generate a frequency of freq Hz.
  */
 
 #define TIMER_FREQ 1193182

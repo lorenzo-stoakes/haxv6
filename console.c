@@ -247,8 +247,8 @@ consoleread(struct inode *ip, char *dst, int n)
 		if (c == C('D')) { /* EOF */
 			if (n < target) {
 				/*
-				 * Save ^D for next time, to make sure
-				 * caller gets a 0-byte result.
+				 * Save ^D for next time, to make sure caller
+				 * gets a 0-byte result.
 				 */
 				input.r--;
 			}

@@ -7,9 +7,8 @@
  * + Directories: inode with special contents (list of other inodes!)
  * + Names: paths like /usr/rtm/xv6/fs.c for convenient naming.
  *
- * This file contains the low-level file system manipulation
- * routines. The (higher-level) system call implementations
- * are in sysfile.c.
+ * This file contains the low-level file system manipulation routines. The
+ * (higher-level) system call implementations are in sysfile.c.
  */
 
 #include "types.h"
@@ -101,47 +100,39 @@ bfree(int dev, uint b)
 /*
  * Inodes.
  *
- * An inode describes a single unnamed file.
- * The inode disk structure holds metadata: the file's type,
- * its size, the number of links referring to it, and the
- * list of blocks holding the file's content.
+ * An inode describes a single unnamed file.  The inode disk structure holds
+ * metadata: the file's type, its size, the number of links referring to it, and
+ * the list of blocks holding the file's content.
  *
- * The inodes are laid out sequentially on disk immediately after
- * the superblock. Each inode has a number, indicating its
- * position on the disk.
+ * The inodes are laid out sequentially on disk immediately after the
+ * superblock. Each inode has a number, indicating its position on the disk.
  *
- * The kernel keeps a cache of in-use inodes in memory
- * to provide a place for synchronizing access
- * to inodes used by multiple processes. The cached
- * inodes include book-keeping information that is
- * not stored on disk: ip->ref and ip->flags.
+ * The kernel keeps a cache of in-use inodes in memory to provide a place for
+ * synchronizing access to inodes used by multiple processes. The cached inodes
+ * include book-keeping information that is not stored on disk: ip->ref and
+ * ip->flags.
  *
- * An inode and its in-memory represtative go through a
- * sequence of states before they can be used by the
- * rest of the file system code.
+ * An inode and its in-memory represtative go through a sequence of states
+ * before they can be used by the rest of the file system code.
  *
- * - Allocation: an inode is allocated if its type (on disk)
- *   is non-zero. ialloc() allocates, iput() frees if
- *   the link count has fallen to zero.
+ * - Allocation: an inode is allocated if its type (on disk) is
+ *   non-zero. ialloc() allocates, iput() frees if the link count has fallen to
+ *   zero.
  *
- * - Referencing in cache: an entry in the inode cache
- *   is free if ip->ref is zero. Otherwise ip->ref tracks
- *   the number of in-memory pointers to the entry (open
- *   files and current directories). iget() to find or
- *   create a cache entry and increment its ref, iput()
- *   to decrement ref.
+ * - Referencing in cache: an entry in the inode cache is free if ip->ref is
+ *   zero. Otherwise ip->ref tracks the number of in-memory pointers to the
+ *   entry (open files and current directories). iget() to find or create a
+ *   cache entry and increment its ref, iput() to decrement ref.
  *
- * - Valid: the information (type, size, &c) in an inode
- *   cache entry is only correct when the I_VALID bit
- *   is set in ip->flags. ilock() reads the inode from
- *   the disk and sets I_VALID, while iput() clears
- *   I_VALID if ip->ref has fallen to zero.
+ * - Valid: the information (type, size, &c) in an inode cache entry is only
+ *   correct when the I_VALID bit is set in ip->flags. ilock() reads the inode
+ *   from the disk and sets I_VALID, while iput() clears I_VALID if ip->ref has
+ *   fallen to zero.
  *
- * - Locked: file system code may only examine and modify
- *   the information in an inode and its content if it
- *   has first locked the inode. The I_BUSY flag indicates
- *   that the inode is locked. ilock() sets I_BUSY,
- *   while iunlock clears it.
+ * - Locked: file system code may only examine and modify the information in an
+ *   inode and its content if it has first locked the inode. The I_BUSY flag
+ *   indicates that the inode is locked. ilock() sets I_BUSY, while iunlock
+ *   clears it.
  *
  * Thus a typical sequence is:
  *   ip = iget(dev, inum)
@@ -150,16 +141,14 @@ bfree(int dev, uint b)
  *   iunlock(ip)
  *   iput(ip)
  *
- * ilock() is separate from iget() so that system calls can
- * get a long-term reference to an inode (as for an open file)
- * and only lock it for short periods (e.g., in read()).
- * The separation also helps avoid deadlock and races during
- * pathname lookup. iget() increments ip->ref so that the inode
+ * ilock() is separate from iget() so that system calls can get a long-term
+ * reference to an inode (as for an open file) and only lock it for short
+ * periods (e.g., in read()).  The separation also helps avoid deadlock and
+ * races during pathname lookup. iget() increments ip->ref so that the inode
  * stays cached and pointers to it remain valid.
  *
- * Many internal file system functions expect the caller to
- * have locked the inodes involved; this lets callers create
- * multi-step atomic operations.
+ * Many internal file system functions expect the caller to have locked the
+ * inodes involved; this lets callers create multi-step atomic operations.
  */
 struct {
 	struct spinlock lock;
@@ -223,9 +212,8 @@ iupdate(struct inode *ip)
 }
 
 /*
- * Find the inode with number inum on device dev
- * and return the in-memory copy. Does not lock
- * the inode and does not read it from disk.
+ * Find the inode with number inum on device dev and return the in-memory
+ * copy. Does not lock the inode and does not read it from disk.
  */
 static struct inode*
 iget(uint dev, uint inum)
@@ -261,8 +249,7 @@ iget(uint dev, uint inum)
 }
 
 /*
- * Increment reference count for ip.
- * Returns ip to enable ip = idup(ip1) idiom.
+ * Increment reference count for ip. Returns ip to enable ip = idup(ip1) idiom.
  */
 struct inode*
 idup(struct inode *ip)
@@ -274,8 +261,7 @@ idup(struct inode *ip)
 }
 
 /*
- * Lock the given inode.
- * Reads the inode from disk if necessary.
+ * Lock the given inode. Reads the inode from disk if necessary.
  */
 void
 ilock(struct inode *ip)
@@ -322,12 +308,11 @@ iunlock(struct inode *ip)
 }
 
 /*
- * Drop a reference to an in-memory inode.
- * If that was the last reference, the inode cache entry can
- * be recycled.
+ * Drop a reference to an in-memory inode. If that was the last reference, the
+ * inode cache entry can be recycled.
  *
- * If that was the last reference and the inode has no links
- * to it, free the inode (and its content) on disk.
+ * If that was the last reference and the inode has no links to it, free the
+ * inode (and its content) on disk.
  */
 void
 iput(struct inode *ip)
@@ -361,13 +346,12 @@ iunlockput(struct inode *ip)
 /*
  * Inode content
  *
- * The content (data) associated with each inode is stored
- * in blocks on the disk. The first NDIRECT block numbers
- * are listed in ip->addrs[]. The next NINDIRECT blocks are
- * listed in block ip->addrs[NDIRECT].
+ * The content (data) associated with each inode is stored in blocks on the
+ * disk. The first NDIRECT block numbers are listed in ip->addrs[]. The next
+ * NINDIRECT blocks are listed in block ip->addrs[NDIRECT].
  *
- * Return the disk block address of the nth block in inode ip.
- * If there is no such block, bmap allocates one.
+ * Return the disk block address of the nth block in inode ip. If there is no
+ * such block, bmap allocates one.
  */
 static uint
 bmap(struct inode *ip, uint bn)
@@ -400,11 +384,9 @@ bmap(struct inode *ip, uint bn)
 }
 
 /*
- * Truncate inode (discard contents).
- * Only called when the inode has no links
- * to it (no directory entries referring to it)
- * and has no in-memory reference to it (is
- * not an open file or current directory).
+ * Truncate inode (discard contents). Only called when the inode has no links
+ * to it (no directory entries referring to it) and has no in-memory reference
+ * to it (is not an open file or current directory).
  */
 static void
 itrunc(struct inode *ip)
@@ -578,11 +560,10 @@ dirlink(struct inode *dp, char *name, uint inum)
 /*
  * Paths
  *
- * Copy the next path element from path into name.
- * Return a pointer to the element following the copied one.
- * The returned path has no leading slashes,
- * so the caller can check *path=='\0' to see if the name is the last one.
- * If no name to remove, return 0.
+ * Copy the next path element from path into name. Return a pointer to the
+ * element following the copied one. The returned path has no leading slashes,
+ * so the caller can check *path=='\0' to see if the name is the last one. If
+ * no name to remove, return 0.
  *
  * Examples:
  *   skipelem("a/bb/c", name) = "bb/c", setting name = "a"
@@ -617,8 +598,9 @@ skipelem(char *path, char *name)
 
 /*
  * Look up and return the inode for a path name.
- * If parent != 0, return the inode for the parent and copy the final
- * path element into name, which must have room for DIRSIZ bytes.
+ *
+ * If parent != 0, return the inode for the parent and copy the final path
+ * element into name, which must have room for DIRSIZ bytes.
  */
 static struct inode*
 namex(char *path, int nameiparent, char *name)

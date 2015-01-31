@@ -1,10 +1,10 @@
 /*
  * Buffer cache.
  *
- * The buffer cache is a linked list of buf structures holding
- * cached copies of disk block contents. Caching disk blocks
- * in memory reduces the number of disk reads and also provides
- * a synchronization point for disk blocks used by multiple processe
+ * The buffer cache is a linked list of buf structures holding cached copies of
+ * disk block contents. Caching disk blocks in memory reduces the number of disk
+ * reads and also provides a synchronization point for disk blocks used by
+ * multiple processe
  *
  * Interface:
  * - To get a buffer for a particular disk block, call bread.
@@ -33,8 +33,8 @@ struct {
 	struct buf buf[NBUF];
 
 	/*
-	 * Linked list of all buffers, through prev/next.
-	 * head.next is most recently used.
+	 * Linked list of all buffers, through prev/next. head.next is most
+	 * recently used.
 	 */
 	struct buf head;
 } bcache;
@@ -59,9 +59,8 @@ binit(void)
 }
 
 /*
- * Look through buffer cache for sector on device dev.
- * If not found, allocate fresh block.
- * In either case, return B_BUSY buffer.
+ * Look through buffer cache for sector on device dev. If not found, allocate
+ * fresh block. In either case, return B_BUSY buffer.
  */
 static struct buf*
 bget(uint dev, uint sector)
@@ -109,7 +108,7 @@ bread(uint dev, uint sector)
 	return b;
 }
 
-/* Write b's contents to disk.	Must be B_BUSY. */
+/* Write b's contents to disk. Must be B_BUSY. */
 void
 bwrite(struct buf *b)
 {

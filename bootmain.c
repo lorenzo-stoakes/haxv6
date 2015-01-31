@@ -2,9 +2,9 @@
  * Boot loader.
  *
  * Part of the boot sector, along with bootasm.S, which calls bootmain().
- * bootasm.S has put the processor into protected 32-bit mode.
- * bootmain() loads an ELF kernel image from the disk starting at
- * sector 1 and then jumps to the kernel entry routine.
+ * bootasm.S has put the processor into protected 32-bit mode.  bootmain() loads
+ * an ELF kernel image from the disk starting at sector 1 and then jumps to the
+ * kernel entry routine.
  */
 
 #include "types.h"
@@ -78,8 +78,8 @@ readsect(void *dst, uint offset)
 }
 
 /*
- * Read 'count' bytes at 'offset' from kernel into physical address 'pa'.
- * Might copy more than asked.
+ * Read 'count' bytes at 'offset' from kernel into physical address 'pa'. Might
+ * copy more than asked.
  */
 void
 readseg(uchar *pa, uint count, uint offset)
@@ -95,9 +95,9 @@ readseg(uchar *pa, uint count, uint offset)
 	offset = (offset / SECTSIZE) + 1;
 
 	/*
-	 * If this is too slow, we could read lots of sectors at a time.
-	 * We'd write more to memory than asked, but it doesn't matter --
-	 * we load in increasing order.
+	 * If this is too slow, we could read lots of sectors at a time. We'd
+	 * write more to memory than asked, but it doesn't matter -- we load in
+	 * increasing order.
 	 */
 	for (; pa < epa; pa += SECTSIZE, offset++)
 		readsect(pa, offset);
