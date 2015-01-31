@@ -1544,7 +1544,7 @@ bigargtest(void)
 		int i;
 
 		for (i = 0; i < MAXARG - 1; i++)
-			args[i] = "bigargs test: failed\n																																																																																																			 ";
+      args[i] = "bigargs test: failed\n                                                                                                                                                                                                       ";
 		args[MAXARG-1] = 0;
 		fprintf(stdout, "bigarg test\n");
 		exec("echo", args);
