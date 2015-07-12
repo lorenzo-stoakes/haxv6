@@ -16,8 +16,7 @@
 
 void readseg(uchar*, uint, uint);
 
-void
-bootmain(void)
+void bootmain(void)
 {
 	struct elfhdr *elf;
 	struct proghdr *ph, *eph;
@@ -51,8 +50,7 @@ bootmain(void)
 	entry();
 }
 
-void
-waitdisk(void)
+void waitdisk(void)
 {
 	/* Wait for disk ready. */
 	while ((inb(0x1F7) & 0xC0) != 0x40)
@@ -60,8 +58,7 @@ waitdisk(void)
 }
 
 /* Read a single sector at offset into dst. */
-void
-readsect(void *dst, uint offset)
+void readsect(void *dst, uint offset)
 {
 	/* Issue command. */
 	waitdisk();
@@ -81,8 +78,7 @@ readsect(void *dst, uint offset)
  * Read 'count' bytes at 'offset' from kernel into physical address 'pa'. Might
  * copy more than asked.
  */
-void
-readseg(uchar *pa, uint count, uint offset)
+void readseg(uchar *pa, uint count, uint offset)
 {
 	uchar *epa;
 

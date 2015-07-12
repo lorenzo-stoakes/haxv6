@@ -9,8 +9,7 @@
 #include "proc.h"
 #include "spinlock.h"
 
-void
-initlock(struct spinlock *lk, char *name)
+void initlock(struct spinlock *lk, char *name)
 {
 	lk->name = name;
 	lk->locked = 0;
@@ -24,8 +23,7 @@ initlock(struct spinlock *lk, char *name)
  * Holding a lock for a long time may cause other CPUs to waste time spinning to
  * acquire it.
  */
-void
-acquire(struct spinlock *lk)
+void acquire(struct spinlock *lk)
 {
 	pushcli(); /* disable interrupts to avoid deadlock. */
 	if (holding(lk))
@@ -44,8 +42,7 @@ acquire(struct spinlock *lk)
 }
 
 /* Release the lock. */
-void
-release(struct spinlock *lk)
+void release(struct spinlock *lk)
 {
 	if (!holding(lk))
 		panic("release");
@@ -69,8 +66,7 @@ release(struct spinlock *lk)
 }
 
 /* Record the current call stack in pcs[] by following the %ebp chain. */
-void
-getcallerpcs(void *v, uint pcs[])
+void getcallerpcs(void *v, uint pcs[])
 {
 	uint *ebp;
 	int i;
@@ -88,8 +84,7 @@ getcallerpcs(void *v, uint pcs[])
 }
 
 /* Check whether this cpu is holding the lock. */
-int
-holding(struct spinlock *lock)
+int holding(struct spinlock *lock)
 {
 	return lock->locked && lock->cpu == cpu;
 }
@@ -100,8 +95,7 @@ holding(struct spinlock *lock)
  * popcli to undo two pushcli. Also, if interrupts are off, then pushcli, popcli
  * leaves them off.
  */
-void
-pushcli(void)
+void pushcli(void)
 {
 	int eflags;
 
@@ -111,8 +105,7 @@ pushcli(void)
 		cpu->intena = eflags & FL_IF;
 }
 
-void
-popcli(void)
+void popcli(void)
 {
 	if (readeflags()&FL_IF)
 		panic("popcli - interruptible");

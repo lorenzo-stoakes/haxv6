@@ -10,14 +10,12 @@
 
 #define N 1000
 
-void
-fprintf(int fd, char *s, ...)
+void fprintf(int fd, char *s, ...)
 {
 	write(fd, s, strlen(s));
 }
 
-void
-forktest(void)
+void forktest(void)
 {
 	int n, pid;
 
@@ -51,8 +49,7 @@ forktest(void)
 	fprintf(1, "fork test OK\n");
 }
 
-int
-main(void)
+int main(void)
 {
 	forktest();
 	exit();

@@ -15,8 +15,7 @@
 
 static int uart; /* is there a uart? */
 
-void
-uartinit(void)
+void uartinit(void)
 {
 	char *p;
 
@@ -48,8 +47,7 @@ uartinit(void)
 		uartputc(*p);
 }
 
-void
-uartputc(int c)
+void uartputc(int c)
 {
 	int i;
 
@@ -60,8 +58,7 @@ uartputc(int c)
 	outb(COM1+0, c);
 }
 
-static int
-uartgetc(void)
+static int uartgetc(void)
 {
 	if (!uart)
 		return -1;
@@ -70,8 +67,7 @@ uartgetc(void)
 	return inb(COM1+0);
 }
 
-void
-uartintr(void)
+void uartintr(void)
 {
 	consoleintr(uartgetc);
 }

@@ -62,8 +62,7 @@ binit(void)
  * Look through buffer cache for sector on device dev. If not found, allocate
  * fresh block. In either case, return B_BUSY buffer.
  */
-static struct buf*
-bget(uint dev, uint sector)
+static struct buf* bget(uint dev, uint sector)
 {
 	struct buf *b;
 
@@ -97,8 +96,7 @@ loop:
 }
 
 /* Return a B_BUSY buf with the contents of the indicated disk sector. */
-struct buf*
-bread(uint dev, uint sector)
+struct buf* bread(uint dev, uint sector)
 {
 	struct buf *b;
 
@@ -109,8 +107,7 @@ bread(uint dev, uint sector)
 }
 
 /* Write b's contents to disk. Must be B_BUSY. */
-void
-bwrite(struct buf *b)
+void bwrite(struct buf *b)
 {
 	if ((b->flags & B_BUSY) == 0)
 		panic("bwrite");
@@ -122,8 +119,7 @@ bwrite(struct buf *b)
  * Release a B_BUSY buffer.
  * Move to the head of the MRU list.
  */
-void
-brelse(struct buf *b)
+void brelse(struct buf *b)
 {
 	if ((b->flags & B_BUSY) == 0)
 		panic("brelse");

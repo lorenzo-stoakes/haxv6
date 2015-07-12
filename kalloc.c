@@ -32,23 +32,20 @@ struct {
  * 2. main() calls kinit2() with the rest of the physical pages after installing
  * a full page table that maps them on all cores.
  */
-void
-kinit1(void *vstart, void *vend)
+void kinit1(void *vstart, void *vend)
 {
 	initlock(&kmem.lock, "kmem");
 	kmem.use_lock = 0;
 	freerange(vstart, vend);
 }
 
-void
-kinit2(void *vstart, void *vend)
+void kinit2(void *vstart, void *vend)
 {
 	freerange(vstart, vend);
 	kmem.use_lock = 1;
 }
 
-void
-freerange(void *vstart, void *vend)
+void freerange(void *vstart, void *vend)
 {
 	char *p;
 
@@ -62,8 +59,7 @@ freerange(void *vstart, void *vend)
  * been returned by a call to kalloc(). (The exception is when initializing the
  * allocator; see kinit above.)
  */
-void
-kfree(char *v)
+void kfree(char *v)
 {
 	struct run *r;
 
@@ -86,8 +82,7 @@ kfree(char *v)
  * Allocate one 4096-byte page of physical memory. Returns a pointer that the
  * kernel can use. Returns 0 if the memory cannot be allocated.
  */
-char*
-kalloc(void)
+char* kalloc(void)
 {
 	struct run *r;
 

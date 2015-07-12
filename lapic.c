@@ -43,15 +43,13 @@
 
 volatile uint *lapic;	/* Initialized in mp.c */
 
-static void
-lapicw(int index, int value)
+static void lapicw(int index, int value)
 {
 	lapic[index] = value;
 	lapic[ID]; /* wait for write to finish, by reading */
 }
 
-void
-lapicinit(void)
+void lapicinit(void)
 {
 	if (!lapic)
 		return;
@@ -99,8 +97,7 @@ lapicinit(void)
 	lapicw(TPR, 0);
 }
 
-int
-cpunum(void)
+int cpunum(void)
 {
 	/*
 	 * Cannot call cpu when interrupts are enabled: result not guaranteed to
@@ -122,8 +119,7 @@ cpunum(void)
 }
 
 /* Acknowledge interrupt. */
-void
-lapiceoi(void)
+void lapiceoi(void)
 {
 	if (lapic)
 		lapicw(EOI, 0);
@@ -133,8 +129,7 @@ lapiceoi(void)
  * Spin for a given number of microseconds.
  * On real hardware would want to tune this dynamically.
  */
-void
-microdelay(int us)
+void microdelay(int us)
 {
 }
 
@@ -144,8 +139,7 @@ microdelay(int us)
  * Start additional processor running entry code at addr.
  * See Appendix B of MultiProcessor Specification.
  */
-void
-lapicstartap(uchar apicid, uint addr)
+void lapicstartap(uchar apicid, uint addr)
 {
 	int i;
 	ushort *wrv;

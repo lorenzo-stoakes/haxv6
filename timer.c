@@ -23,8 +23,7 @@
 #define TIMER_RATEGEN 0x04 /* mode 2, rate generator */
 #define TIMER_16BIT 0x30 /* r/w counter 16 bits, LSB first */
 
-void
-timerinit(void)
+void timerinit(void)
 {
 	/* Interrupt 100 times/sec. */
 	outb(TIMER_MODE, TIMER_SEL0 | TIMER_RATEGEN | TIMER_16BIT);

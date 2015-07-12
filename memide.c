@@ -18,16 +18,14 @@ extern uchar _binary_fs_img_start[], _binary_fs_img_size[];
 static int disksize;
 static uchar *memdisk;
 
-void
-ideinit(void)
+void ideinit(void)
 {
 	memdisk = _binary_fs_img_start;
 	disksize = (uint)_binary_fs_img_size/512;
 }
 
 /* Interrupt handler. */
-void
-ideintr(void)
+void ideintr(void)
 {
 	/* no-op */
 }
@@ -38,8 +36,7 @@ ideintr(void)
  * If B_DIRTY is set, write buf to disk, clear B_DIRTY, set B_VALID.
  * Else if B_VALID is not set, read buf from disk, set B_VALID.
  */
-void
-iderw(struct buf *b)
+void iderw(struct buf *b)
 {
 	uchar *p;
 

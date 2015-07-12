@@ -17,8 +17,7 @@ extern char end[]; /* first address after kernel loaded from ELF file */
  * Allocate a real stack and switch to it, first doing some setup required for
  * memory allocator to work.
  */
-int
-main(void)
+int main(void)
 {
 	kinit1(end, P2V(4*1024*1024)); /* phys page allocator */
 	kvmalloc(); /* kernel page table */
@@ -47,8 +46,7 @@ main(void)
 }
 
 /* Other CPUs jump here from entryother.S. */
-static void
-mpenter(void)
+static void mpenter(void)
 {
 	switchkvm();
 	seginit();
@@ -57,8 +55,7 @@ mpenter(void)
 }
 
 /* Common CPU setup code. */
-static void
-mpmain(void)
+static void mpmain(void)
 {
 	cprintf("cpu%d: starting\n", cpu->id);
 	idtinit(); /* load idt register */
@@ -69,8 +66,7 @@ mpmain(void)
 pde_t entrypgdir[]; /* For entry.S */
 
 /* Start the non-boot (AP) processors. */
-static void
-startothers(void)
+static void startothers(void)
 {
 	extern uchar _binary_entryother_start[], _binary_entryother_size[];
 	uchar *code;

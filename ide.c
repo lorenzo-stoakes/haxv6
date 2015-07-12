@@ -32,8 +32,7 @@ static int havedisk1;
 static void idestart(struct buf *);
 
 /* Wait for IDE disk to become ready. */
-static int
-idewait(int checkerr)
+static int idewait(int checkerr)
 {
 	int r;
 
@@ -44,8 +43,7 @@ idewait(int checkerr)
 	return 0;
 }
 
-void
-ideinit(void)
+void ideinit(void)
 {
 	int i;
 
@@ -68,8 +66,7 @@ ideinit(void)
 }
 
 /* Start the request for b. Caller must hold idelock. */
-static void
-idestart(struct buf *b)
+static void idestart(struct buf *b)
 {
 	if (b == 0)
 		panic("idestart");
@@ -90,8 +87,7 @@ idestart(struct buf *b)
 }
 
 /* Interrupt handler. */
-void
-ideintr(void)
+void ideintr(void)
 {
 	struct buf *b;
 
@@ -127,8 +123,7 @@ ideintr(void)
  * If B_DIRTY is set, write buf to disk, clear B_DIRTY, set B_VALID.
  * Else if B_VALID is not set, read buf from disk, set B_VALID.
  */
-void
-iderw(struct buf *b)
+void iderw(struct buf *b)
 {
 	struct buf **pp;
 

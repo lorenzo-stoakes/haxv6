@@ -20,8 +20,7 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-void
-pinit(void)
+void pinit(void)
 {
 	initlock(&ptable.lock, "ptable");
 }
@@ -34,8 +33,7 @@ pinit(void)
  *
  * Otherwise return 0.
  */
-static struct proc*
-allocproc(void)
+static struct proc* allocproc(void)
 {
 	struct proc *p;
 	char *sp;
@@ -80,8 +78,7 @@ found:
 }
 
 /* Set up first user process. */
-void
-userinit(void)
+void userinit(void)
 {
 	struct proc *p;
 	extern char _binary_initcode_start[], _binary_initcode_size[];
@@ -113,8 +110,7 @@ userinit(void)
  * Grow current process's memory by n bytes.
  * Return 0 on success, -1 on failure.
  */
-int
-growproc(int n)
+int growproc(int n)
 {
 	uint sz;
 
@@ -138,8 +134,7 @@ growproc(int n)
  * Sets up stack to return as if from system call.
  * Caller must set state of returned proc to RUNNABLE.
  */
-int
-fork(void)
+int fork(void)
 {
 	int i, pid;
 	struct proc *np;
@@ -181,8 +176,7 @@ fork(void)
  * An exited process remains in the zombie state until its parent calls wait()
  * to find out it exited.
  */
-void
-exit(void)
+void exit(void)
 {
 	struct proc *p;
 	int fd;
@@ -225,8 +219,7 @@ exit(void)
  * Wait for a child process to exit and return its pid.
  * Return -1 if this process has no children.
  */
-int
-wait(void)
+int wait(void)
 {
 	struct proc *p;
 	int havekids, pid;
@@ -277,8 +270,7 @@ wait(void)
  *  - eventually that process transfers control
  *      via swtch back to the scheduler.
  */
-void
-scheduler(void)
+void scheduler(void)
 {
 	struct proc *p;
 
@@ -318,8 +310,7 @@ scheduler(void)
 }
 
 /* Enter scheduler. Must hold only ptable.lock and have changed proc->state. */
-void
-sched(void)
+void sched(void)
 {
 	int intena;
 
@@ -337,8 +328,7 @@ sched(void)
 }
 
 /* Give up the CPU for one scheduling round. */
-void
-yield(void)
+void yield(void)
 {
 	acquire(&ptable.lock);	/*DOC: yieldlock */
 	proc->state = RUNNABLE;
@@ -350,8 +340,7 @@ yield(void)
  * A fork child's very first scheduling by scheduler() will swtch here. "Return"
  * to user space.
  */
-void
-forkret(void)
+void forkret(void)
 {
 	static int first = 1;
 	/* Still holding ptable.lock from scheduler. */
@@ -375,8 +364,7 @@ forkret(void)
  * Atomically release lock and sleep on chan.
  * Reacquires lock when awakened.
  */
-void
-sleep(void *chan, struct spinlock *lk)
+void sleep(void *chan, struct spinlock *lk)
 {
 	if (proc == 0)
 		panic("sleep");
@@ -414,8 +402,7 @@ sleep(void *chan, struct spinlock *lk)
  * Wake up all processes sleeping on chan.
  * The ptable lock must be held.
  */
-static void
-wakeup1(void *chan)
+static void wakeup1(void *chan)
 {
 	struct proc *p;
 
@@ -425,8 +412,7 @@ wakeup1(void *chan)
 }
 
 /* Wake up all processes sleeping on chan. */
-void
-wakeup(void *chan)
+void wakeup(void *chan)
 {
 	acquire(&ptable.lock);
 	wakeup1(chan);
@@ -438,8 +424,7 @@ wakeup(void *chan)
  *
  * Process won't exit until it returns to user space (see trap in trap.c).
  */
-int
-kill(int pid)
+int kill(int pid)
 {
 	struct proc *p;
 
@@ -463,8 +448,7 @@ kill(int pid)
  * Runs when user types ^P on console.
  * No lock to avoid wedging a stuck machine further.
  */
-void
-procdump(void)
+void procdump(void)
 {
 	static char *states[] = {
 		[UNUSED] "unused",

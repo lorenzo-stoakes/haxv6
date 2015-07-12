@@ -17,8 +17,7 @@
  */
 
 /* Fetch the int at addr from the current process. */
-int
-fetchint(uint addr, int *ip)
+int fetchint(uint addr, int *ip)
 {
 	if (addr >= proc->sz || addr+4 > proc->sz)
 		return -1;
@@ -31,8 +30,7 @@ fetchint(uint addr, int *ip)
  * Doesn't actually copy the string - just sets *pp to point at it.
  * Returns length of string, not including nul.
  */
-int
-fetchstr(uint addr, char **pp)
+int fetchstr(uint addr, char **pp)
 {
 	char *s, *ep;
 
@@ -47,8 +45,7 @@ fetchstr(uint addr, char **pp)
 }
 
 /* Fetch the nth 32-bit system call argument. */
-int
-argint(int n, int *ip)
+int argint(int n, int *ip)
 {
 	return fetchint(proc->tf->esp + 4 + 4*n, ip);
 }
@@ -58,8 +55,7 @@ argint(int n, int *ip)
  * memory of size n bytes. Check that the pointer lies within the process
  * address space.
  */
-int
-argptr(int n, char **pp, int size)
+int argptr(int n, char **pp, int size)
 {
 	int i;
 
@@ -77,8 +73,7 @@ argptr(int n, char **pp, int size)
  * shared writable memory, so the string can't change between this check and
  * being used by the kernel.)
  */
-int
-argstr(int n, char **pp)
+int argstr(int n, char **pp)
 {
 	int addr;
 
@@ -133,8 +128,7 @@ static int (*syscalls[])(void) = {
 	[SYS_close] sys_close,
 };
 
-void
-syscall(void)
+void syscall(void)
 {
 	int num;
 

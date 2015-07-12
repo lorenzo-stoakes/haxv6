@@ -37,22 +37,19 @@ struct ioapic {
 	uint data;
 };
 
-static uint
-ioapicread(int reg)
+static uint ioapicread(int reg)
 {
 	ioapic->reg = reg;
 	return ioapic->data;
 }
 
-static void
-ioapicwrite(int reg, uint data)
+static void ioapicwrite(int reg, uint data)
 {
 	ioapic->reg = reg;
 	ioapic->data = data;
 }
 
-void
-ioapicinit(void)
+void ioapicinit(void)
 {
 	int i, id, maxintr;
 
@@ -75,8 +72,7 @@ ioapicinit(void)
 	}
 }
 
-void
-ioapicenable(int irq, int cpunum)
+void ioapicenable(int irq, int cpunum)
 {
 	if (!ismp)
 		return;

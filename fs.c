@@ -26,8 +26,7 @@
 static void itrunc(struct inode *);
 
 /* Read the super block. */
-void
-readsb(int dev, struct superblock *sb)
+void readsb(int dev, struct superblock *sb)
 {
 	struct buf *bp;
 
@@ -37,8 +36,7 @@ readsb(int dev, struct superblock *sb)
 }
 
 /* Zero a block. */
-static void
-bzero(int dev, int bno)
+static void bzero(int dev, int bno)
 {
 	struct buf *bp;
 
@@ -51,8 +49,7 @@ bzero(int dev, int bno)
 /* Blocks. */
 
 /* Allocate a zeroed disk block. */
-static uint
-balloc(uint dev)
+static uint balloc(uint dev)
 {
 	int b, bi, m;
 	struct buf *bp;
@@ -79,8 +76,7 @@ balloc(uint dev)
 }
 
 /* Free a disk block. */
-static void
-bfree(int dev, uint b)
+static void bfree(int dev, uint b)
 {
 	struct buf *bp;
 	struct superblock sb;
@@ -155,8 +151,7 @@ struct {
 	struct inode inode[NINODE];
 } icache;
 
-void
-iinit(void)
+void iinit(void)
 {
 	initlock(&icache.lock, "icache");
 }
@@ -167,8 +162,7 @@ static struct inode *iget(uint dev, uint inum);
  * Allocate a new inode with the given type on device dev.
  * A free inode has a type of zero.
  */
-struct inode*
-ialloc(uint dev, short type)
+struct inode* ialloc(uint dev, short type)
 {
 	int inum;
 	struct buf *bp;
@@ -193,8 +187,7 @@ ialloc(uint dev, short type)
 }
 
 /* Copy a modified in-memory inode to disk. */
-void
-iupdate(struct inode *ip)
+void iupdate(struct inode *ip)
 {
 	struct buf *bp;
 	struct dinode *dip;
@@ -215,8 +208,7 @@ iupdate(struct inode *ip)
  * Find the inode with number inum on device dev and return the in-memory
  * copy. Does not lock the inode and does not read it from disk.
  */
-static struct inode*
-iget(uint dev, uint inum)
+static struct inode* iget(uint dev, uint inum)
 {
 	struct inode *ip, *empty;
 
@@ -251,8 +243,7 @@ iget(uint dev, uint inum)
 /*
  * Increment reference count for ip. Returns ip to enable ip = idup(ip1) idiom.
  */
-struct inode*
-idup(struct inode *ip)
+struct inode* idup(struct inode *ip)
 {
 	acquire(&icache.lock);
 	ip->ref++;
@@ -263,8 +254,7 @@ idup(struct inode *ip)
 /*
  * Lock the given inode. Reads the inode from disk if necessary.
  */
-void
-ilock(struct inode *ip)
+void ilock(struct inode *ip)
 {
 	struct buf *bp;
 	struct dinode *dip;
@@ -295,8 +285,7 @@ ilock(struct inode *ip)
 }
 
 /* Unlock the given inode. */
-void
-iunlock(struct inode *ip)
+void iunlock(struct inode *ip)
 {
 	if (ip == 0 || !(ip->flags & I_BUSY) || ip->ref < 1)
 		panic("iunlock");
@@ -314,8 +303,7 @@ iunlock(struct inode *ip)
  * If that was the last reference and the inode has no links to it, free the
  * inode (and its content) on disk.
  */
-void
-iput(struct inode *ip)
+void iput(struct inode *ip)
 {
 	acquire(&icache.lock);
 	if (ip->ref == 1 && (ip->flags & I_VALID) && ip->nlink == 0) {
@@ -336,8 +324,7 @@ iput(struct inode *ip)
 }
 
 /* Common idiom: unlock, then put. */
-void
-iunlockput(struct inode *ip)
+void iunlockput(struct inode *ip)
 {
 	iunlock(ip);
 	iput(ip);
@@ -353,8 +340,7 @@ iunlockput(struct inode *ip)
  * Return the disk block address of the nth block in inode ip. If there is no
  * such block, bmap allocates one.
  */
-static uint
-bmap(struct inode *ip, uint bn)
+static uint bmap(struct inode *ip, uint bn)
 {
 	uint addr, *a;
 	struct buf *bp;
@@ -393,8 +379,7 @@ bmap(struct inode *ip, uint bn)
  * to it (no directory entries referring to it) and has no in-memory reference
  * to it (is not an open file or current directory).
  */
-static void
-itrunc(struct inode *ip)
+static void itrunc(struct inode *ip)
 {
 	int i, j;
 	struct buf *bp;
@@ -424,8 +409,7 @@ itrunc(struct inode *ip)
 }
 
 /* Copy stat information from inode. */
-void
-stati(struct inode *ip, struct stat *st)
+void stati(struct inode *ip, struct stat *st)
 {
 	st->dev = ip->dev;
 	st->ino = ip->inum;
@@ -435,8 +419,7 @@ stati(struct inode *ip, struct stat *st)
 }
 
 /* Read data from inode. */
-int
-readi(struct inode *ip, char *dst, uint off, uint n)
+int readi(struct inode *ip, char *dst, uint off, uint n)
 {
 	uint tot, m;
 	struct buf *bp;
@@ -463,8 +446,7 @@ readi(struct inode *ip, char *dst, uint off, uint n)
 }
 
 /* Write data to inode. */
-int
-writei(struct inode *ip, char *src, uint off, uint n)
+int writei(struct inode *ip, char *src, uint off, uint n)
 {
 	uint tot, m;
 	struct buf *bp;
@@ -498,8 +480,7 @@ writei(struct inode *ip, char *src, uint off, uint n)
 
 /* Directories */
 
-int
-namecmp(const char *s, const char *t)
+int namecmp(const char *s, const char *t)
 {
 	return strncmp(s, t, DIRSIZ);
 }
@@ -508,8 +489,7 @@ namecmp(const char *s, const char *t)
  * Look for a directory entry in a directory.
  * If found, set *poff to byte offset of entry.
  */
-struct inode*
-dirlookup(struct inode *dp, char *name, uint *poff)
+struct inode* dirlookup(struct inode *dp, char *name, uint *poff)
 {
 	uint off, inum;
 	struct dirent de;
@@ -535,8 +515,7 @@ dirlookup(struct inode *dp, char *name, uint *poff)
 }
 
 /* Write a new directory entry (name, inum) into the directory dp. */
-int
-dirlink(struct inode *dp, char *name, uint inum)
+int dirlink(struct inode *dp, char *name, uint inum)
 {
 	int off;
 	struct dirent de;
@@ -580,8 +559,7 @@ dirlink(struct inode *dp, char *name, uint inum)
  *   skipelem("a", name) = "", setting name = "a"
  *   skipelem("", name) = skipelem("////", name) = 0
  */
-static char*
-skipelem(char *path, char *name)
+static char* skipelem(char *path, char *name)
 {
 	char *s;
 	int len;
@@ -611,8 +589,7 @@ skipelem(char *path, char *name)
  * If parent != 0, return the inode for the parent and copy the final path
  * element into name, which must have room for DIRSIZ bytes.
  */
-static struct inode*
-namex(char *path, int nameiparent, char *name)
+static struct inode* namex(char *path, int nameiparent, char *name)
 {
 	struct inode *ip, *next;
 
@@ -648,16 +625,14 @@ namex(char *path, int nameiparent, char *name)
 	return ip;
 }
 
-struct inode*
-namei(char *path)
+struct inode* namei(char *path)
 {
 	char name[DIRSIZ];
 
 	return namex(path, 0, name);
 }
 
-struct inode*
-nameiparent(char *path, char *name)
+struct inode* nameiparent(char *path, char *name)
 {
 	return namex(path, 1, name);
 }

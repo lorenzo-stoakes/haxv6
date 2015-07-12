@@ -53,8 +53,7 @@ struct log log;
 
 static void recover_from_log(void);
 
-void
-initlog(void)
+void initlog(void)
 {
 	if (sizeof(struct logheader) >= BSIZE)
 		panic("initlog: too big logheader");
@@ -70,8 +69,7 @@ initlog(void)
 }
 
 /* Copy committed blocks from log to their home location */
-static void
-install_trans(void)
+static void install_trans(void)
 {
 	int tail;
 
@@ -89,8 +87,7 @@ install_trans(void)
 }
 
 /* Read the log header from disk into the in-memory log header */
-static void
-read_head(void)
+static void read_head(void)
 {
 	struct buf *buf = bread(log.dev, log.start);
 	struct logheader *lh = (struct logheader *) (buf->data);
@@ -107,8 +104,7 @@ read_head(void)
  * Write in-memory log header to disk. This is the true point at which the
  * current transaction commits.
  */
-static void
-write_head(void)
+static void write_head(void)
 {
 	struct buf *buf = bread(log.dev, log.start);
 	struct logheader *hb = (struct logheader *) (buf->data);
@@ -122,8 +118,7 @@ write_head(void)
 	brelse(buf);
 }
 
-static void
-recover_from_log(void)
+static void recover_from_log(void)
 {
 	read_head();
 	install_trans(); /* if committed, copy from log to disk */
@@ -131,8 +126,7 @@ recover_from_log(void)
 	write_head(); /* clear the log */
 }
 
-void
-begin_trans(void)
+void begin_trans(void)
 {
 	acquire(&log.lock);
 	while (log.busy) {
@@ -142,8 +136,7 @@ begin_trans(void)
 	release(&log.lock);
 }
 
-void
-commit_trans(void)
+void commit_trans(void)
 {
 	if (log.lh.n > 0) {
 		write_head(); /* Write header to disk -- the real commit */
@@ -171,8 +164,7 @@ commit_trans(void)
  *   brelse(bp)
  */
 
-void
-log_write(struct buf *b)
+void log_write(struct buf *b)
 {
 	int i;
 
