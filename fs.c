@@ -360,7 +360,8 @@ bmap(struct inode *ip, uint bn)
 	struct buf *bp;
 
 	if (bn < NDIRECT) {
-		if ((addr = ip->addrs[bn]) == 0)
+		addr = ip->addrs[bn];
+		if (addr == 0)
 			ip->addrs[bn] = addr = balloc(ip->dev);
 		return addr;
 	}
@@ -368,11 +369,15 @@ bmap(struct inode *ip, uint bn)
 
 	if (bn < NINDIRECT) {
 		/* Load indirect block, allocating if necessary. */
-		if ((addr = ip->addrs[NDIRECT]) == 0)
+		addr = ip->addrs[NDIRECT];
+
+		if (addr == 0)
 			ip->addrs[NDIRECT] = addr = balloc(ip->dev);
 		bp = bread(ip->dev, addr);
 		a = (uint *)bp->data;
-		if ((addr = a[bn]) == 0) {
+
+		addr = a[bn];
+		if (addr == 0) {
 			a[bn] = addr = balloc(ip->dev);
 			log_write(bp);
 		}
@@ -538,7 +543,9 @@ dirlink(struct inode *dp, char *name, uint inum)
 	struct inode *ip;
 
 	/* Check that name is not present. */
-	if ((ip = dirlookup(dp, name, 0)) != 0) {
+
+	ip = dirlookup(dp, name, 0);
+	if (ip != 0) {
 		iput(ip);
 		return -1;
 	}
@@ -625,7 +632,9 @@ namex(char *path, int nameiparent, char *name)
 			iunlock(ip);
 			return ip;
 		}
-		if ((next = dirlookup(ip, name, 0)) == 0) {
+
+		next = dirlookup(ip, name, 0);
+		if (next == 0) {
 			iunlockput(ip);
 			return 0;
 		}

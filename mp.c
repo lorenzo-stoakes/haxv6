@@ -66,12 +66,16 @@ mpsearch(void)
 	struct mp *mp;
 
 	bda = (uchar *) P2V(0x400);
-	if ((p = ((bda[0x0F]<<8) | bda[0x0E]) << 4)) {
-		if ((mp = mpsearch1(p, 1024)))
+
+	p = ((bda[0x0F]<<8) | bda[0x0E]) << 4;
+	if (p) {
+		mp = mpsearch1(p, 1024);
+		if (mp)
 			return mp;
 	} else {
 		p = ((bda[0x14]<<8)|bda[0x13])*1024;
-		if ((mp = mpsearch1(p-1024, 1024)))
+		mp = mpsearch1(p-1024, 1024);
+		if (mp)
 			return mp;
 	}
 	return mpsearch1(0xF0000, 0x10000);
@@ -90,7 +94,8 @@ mpconfig(struct mp **pmp)
 	struct mpconf *conf;
 	struct mp *mp;
 
-	if ((mp = mpsearch()) == 0 || mp->physaddr == 0)
+	mp = mpsearch();
+	if (mp == 0 || mp->physaddr == 0)
 		return 0;
 	conf = (struct mpconf *) p2v((uint) mp->physaddr);
 	if (memcmp(conf, "PCMP", 4) != 0)
@@ -113,7 +118,8 @@ mpinit(void)
 	struct mpioapic *ioapic;
 
 	bcpu = &cpus[0];
-	if ((conf = mpconfig(&mp)) == 0)
+	conf = mpconfig(&mp);
+	if (conf == 0)
 		return;
 	ismp = 1;
 	lapic = (uint *)conf->lapicaddr;

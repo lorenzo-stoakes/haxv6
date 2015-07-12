@@ -18,7 +18,8 @@ exec(char *path, char **argv)
 	struct proghdr ph;
 	pde_t *pgdir, *oldpgdir;
 
-	if ((ip = namei(path)) == 0)
+	ip = namei(path);
+	if (ip == 0)
 		return -1;
 	ilock(ip);
 	pgdir = 0;
@@ -29,7 +30,8 @@ exec(char *path, char **argv)
 	if (elf.magic != ELF_MAGIC)
 		goto bad;
 
-	if ((pgdir = setupkvm()) == 0)
+	pgdir = setupkvm();
+	if (pgdir == 0)
 		goto bad;
 
 	/* Load program into memory. */
@@ -41,7 +43,8 @@ exec(char *path, char **argv)
 			continue;
 		if (ph.memsz < ph.filesz)
 			goto bad;
-		if ((sz = allocuvm(pgdir, sz, ph.vaddr + ph.memsz)) == 0)
+		sz = allocuvm(pgdir, sz, ph.vaddr + ph.memsz);
+		if (sz == 0)
 			goto bad;
 		if (loaduvm(pgdir, (char *)ph.vaddr, ip, ph.off, ph.filesz) < 0)
 			goto bad;
@@ -54,7 +57,8 @@ exec(char *path, char **argv)
 	 * Make the first inaccessible.	Use the second as the user stack.
 	 */
 	sz = PGROUNDUP(sz);
-	if ((sz = allocuvm(pgdir, sz, sz + 2*PGSIZE)) == 0)
+	sz = allocuvm(pgdir, sz, sz + 2*PGSIZE);
+	if (sz == 0)
 		goto bad;
 	clearpteu(pgdir, (char *)(sz - 2*PGSIZE));
 	sp = sz;

@@ -33,7 +33,9 @@ printint(int xx, int base, int sign)
 	int i;
 	uint x;
 
-	if (sign && (sign = xx < 0))
+	sign = sign && xx < 0;
+
+	if (sign)
 		x = -xx;
 	else
 		x = xx;
@@ -83,7 +85,9 @@ cprintf(char *fmt, ...)
 			printint(*argp++, 16, 0);
 			break;
 		case 's':
-			if ((s = (char *)*argp++) == 0)
+			s = (char *)*argp++;
+
+			if (s == 0)
 				s = "(null)";
 			for (; *s; s++)
 				consputc(*s);

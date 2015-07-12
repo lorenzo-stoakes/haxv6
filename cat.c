@@ -28,7 +28,9 @@ main(int argc, char *argv[])
 	}
 
 	for (i = 1; i < argc; i++) {
-		if ((fd = open(argv[i], 0)) < 0) {
+		fd = open(argv[i], 0);
+
+		if (fd < 0) {
 			fprintf(1, "cat: cannot open %s\n", argv[i]);
 			exit();
 		}

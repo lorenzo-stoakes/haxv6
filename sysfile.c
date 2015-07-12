@@ -27,7 +27,9 @@ argfd(int n, int *pfd, struct file **pf)
 
 	if (argint(n, &fd) < 0)
 		return -1;
-	if (fd < 0 || fd >= NOFILE || (f = proc->ofile[fd]) == 0)
+
+	f = proc->ofile[fd];
+	if (fd < 0 || fd >= NOFILE || f == 0)
 		return -1;
 	if (pfd)
 		*pfd = fd;
@@ -62,7 +64,9 @@ sys_dup(void)
 
 	if (argfd(0, 0, &f) < 0)
 		return -1;
-	if ((fd = fdalloc(f)) < 0)
+
+	fd = fdalloc(f);
+	if (fd < 0)
 		return -1;
 	filedup(f);
 	return fd;
@@ -125,7 +129,9 @@ sys_link(void)
 
 	if (argstr(0, &old) < 0 || argstr(1, &new) < 0)
 		return -1;
-	if ((ip = namei(old)) == 0)
+
+	ip = namei(old);
+	if (ip == 0)
 		return -1;
 
 	begin_trans();
@@ -141,7 +147,8 @@ sys_link(void)
 	iupdate(ip);
 	iunlock(ip);
 
-	if ((dp = nameiparent(new, name)) == 0)
+	dp = nameiparent(new, name);
+	if (dp == 0)
 		goto bad;
 	ilock(dp);
 	if (dp->dev != ip->dev || dirlink(dp, name, ip->inum) < 0) {
@@ -190,7 +197,9 @@ sys_unlink(void)
 
 	if (argstr(0, &path) < 0)
 		return -1;
-	if ((dp = nameiparent(path, name)) == 0)
+
+	dp = nameiparent(path, name);
+	if (dp == 0)
 		return -1;
 
 	begin_trans();
@@ -201,7 +210,8 @@ sys_unlink(void)
 	if (namecmp(name, ".") == 0 || namecmp(name, "..") == 0)
 		goto bad;
 
-	if ((ip = dirlookup(dp, name, &off)) == 0)
+	ip = dirlookup(dp, name, &off);
+	if (ip == 0)
 		goto bad;
 	ilock(ip);
 
@@ -242,11 +252,13 @@ create(char *path, short type, short major, short minor)
 	struct inode *ip, *dp;
 	char name[DIRSIZ];
 
-	if ((dp = nameiparent(path, name)) == 0)
+	dp = nameiparent(path, name);
+	if (dp == 0)
 		return 0;
 	ilock(dp);
 
-	if ((ip = dirlookup(dp, name, &off)) != 0) {
+	ip = dirlookup(dp, name, &off);
+	if (ip != 0) {
 		iunlockput(dp);
 		ilock(ip);
 		if (type == T_FILE && ip->type == T_FILE)
@@ -255,7 +267,8 @@ create(char *path, short type, short major, short minor)
 		return 0;
 	}
 
-	if ((ip = ialloc(dp->dev, type)) == 0)
+	ip = ialloc(dp->dev, type);
+	if (ip == 0)
 		panic("create: ialloc");
 
 	ilock(ip);
@@ -298,7 +311,9 @@ sys_open(void)
 		if (ip == 0)
 			return -1;
 	} else {
-		if ((ip = namei(path)) == 0)
+
+		ip = namei(path);
+		if (ip == 0)
 			return -1;
 		ilock(ip);
 		if (ip->type == T_DIR && omode != O_RDONLY) {
@@ -307,9 +322,14 @@ sys_open(void)
 		}
 	}
 
-	if ((f = filealloc()) == 0 || (fd = fdalloc(f)) < 0) {
-		if (f)
-			fileclose(f);
+	f = filealloc();
+
+	if (f == 0)
+		fileclose(f);
+	else
+		fd = fdalloc(f);
+
+	if (f == 0 || fd < 0) {
 		iunlockput(ip);
 		return -1;
 	}
@@ -326,38 +346,53 @@ sys_open(void)
 int
 sys_mkdir(void)
 {
+	int err = 0;
 	char *path;
 	struct inode *ip;
 
 	begin_trans();
-	if (argstr(0, &path) < 0 || (ip = create(path, T_DIR, 0, 0)) == 0) {
-		commit_trans();
-		return -1;
+	if (argstr(0, &path) < 0) {
+		err = -1;
+		goto done;
 	}
-	iunlockput(ip);
+
+	ip = create(path, T_DIR, 0, 0);
+	if (ip == 0)
+		err = -1;
+	else
+		iunlockput(ip);
+
+done:
 	commit_trans();
-	return 0;
+	return err;
 }
 
 int
 sys_mknod(void)
 {
+	int err = 0;
 	struct inode *ip;
 	char *path;
 	int len;
 	int major, minor;
 
 	begin_trans();
-	if ((len = argstr(0, &path)) < 0 ||
-		 argint(1, &major) < 0 ||
-		 argint(2, &minor) < 0 ||
-		 (ip = create(path, T_DEV, major, minor)) == 0) {
-		commit_trans();
-		return -1;
+	len = argstr(0, &path);
+
+	if (len < 0 || argint(1, &major) < 0 || argint(2, &minor) < 0) {
+		err = -1;
+		goto done;
 	}
-	iunlockput(ip);
+
+	ip = create(path, T_DEV, major, minor);
+	if (ip == 0)
+		err = -1;
+	else
+		iunlockput(ip);
+
+done:
 	commit_trans();
-	return 0;
+	return err;
 }
 
 int
@@ -366,8 +401,13 @@ sys_chdir(void)
 	char *path;
 	struct inode *ip;
 
-	if (argstr(0, &path) < 0 || (ip = namei(path)) == 0)
+	if (argstr(0, &path) < 0)
 		return -1;
+
+	ip = namei(path);
+	if (ip == 0)
+		return -1;
+
 	ilock(ip);
 	if (ip->type != T_DIR) {
 		iunlockput(ip);
@@ -376,6 +416,7 @@ sys_chdir(void)
 	iunlock(ip);
 	iput(proc->cwd);
 	proc->cwd = ip;
+
 	return 0;
 }
 
@@ -416,10 +457,15 @@ sys_pipe(void)
 		return -1;
 	if (pipealloc(&rf, &wf) < 0)
 		return -1;
-	fd0 = -1;
-	if ((fd0 = fdalloc(rf)) < 0 || (fd1 = fdalloc(wf)) < 0) {
+
+	fd0 = fdalloc(rf);
+	if (fd0 >= 0)
+		fd1 = fdalloc(wf);
+
+	if (fd0 < 0 || fd1 < 0) {
 		if (fd0 >= 0)
 			proc->ofile[fd0] = 0;
+
 		fileclose(rf);
 		fileclose(wf);
 		return -1;

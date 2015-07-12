@@ -69,7 +69,9 @@ malloc(uint nbytes)
 	uint nunits;
 
 	nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
-	if ((prevp = freep) == 0) {
+
+	prevp = freep;
+	if (freep == 0) {
 		base.s.ptr = freep = prevp = &base;
 		base.s.size = 0;
 	}
@@ -85,8 +87,12 @@ malloc(uint nbytes)
 			freep = prevp;
 			return (void *)(p + 1);
 		}
-		if (p == freep)
-			if ((p = morecore(nunits)) == 0)
-				return 0;
+
+		if (p != freep)
+			continue;
+
+		p = morecore(nunits);
+		if (p == 0)
+			return 0;
 	}
 }

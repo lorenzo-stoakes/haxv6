@@ -24,10 +24,19 @@ pipealloc(struct file **f0, struct file **f1)
 	struct pipe *p;
 
 	p = 0;
-	*f0 = *f1 = 0;
-	if ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
+
+	*f0 = filealloc();
+	if (*f0 == 0) {
+		*f1 = 0;
 		goto bad;
-	if ((p = (struct pipe *)kalloc()) == 0)
+	}
+
+	*f1 = filealloc();
+	if (*f1 == 0)
+		goto bad;
+
+	p = (struct pipe *)kalloc();
+	if (p == 0)
 		goto bad;
 	p->readopen = 1;
 	p->writeopen = 1;

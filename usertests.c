@@ -335,7 +335,9 @@ mem(void)
 
 	fprintf(1, "mem test\n");
 	ppid = getpid();
-	if ((pid = fork()) == 0) {
+	pid = fork();
+
+	if (pid == 0) {
 		m1 = 0;
 		while ((m2 = malloc(10001)) != 0) {
 			*(char **)m2 = m1;
@@ -447,7 +449,8 @@ twofiles(void)
 
 	memset(buf, pid?'p':'c', 512);
 	for (i = 0; i < 12; i++) {
-		if ((n = write(fd, buf, 500)) != 500) {
+		n = write(fd, buf, 500);
+		if (n != 500) {
 			fprintf(1, "write failed %d\n", n);
 			exit();
 		}
@@ -1438,7 +1441,8 @@ sbrktest(void)
 		exit();
 	}
 	for (i = 0; i < sizeof(pids)/sizeof(pids[0]); i++) {
-		if ((pids[i] = fork()) == 0) {
+		pids[i] = fork();
+		if (pids[i] == 0) {
 			/* allocate a lot of memory */
 			sbrk(BIG - (uint)sbrk(0));
 			write(fds[1], "x", 1);
@@ -1496,7 +1500,8 @@ validatetest(void)
 	hi = 1100*1024;
 
 	for (p = 0; p <= (uint)hi; p += 4096) {
-		if ((pid = fork()) == 0) {
+		pid = fork();
+		if (pid == 0) {
 			/*
 			 * try to crash the kernel by passing in a badly placed
 			 * integer.

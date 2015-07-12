@@ -97,7 +97,9 @@ ideintr(void)
 
 	/* First queued buffer is the active request. */
 	acquire(&idelock);
-	if ((b = idequeue) == 0) {
+
+	b = idequeue;
+	if (b == 0) {
 		release(&idelock);
 		/* cprintf("spurious IDE interrupt\n"); */
 		return;

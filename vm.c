@@ -57,7 +57,11 @@ walkpgdir(pde_t *pgdir, const void *va, int alloc)
 	if (*pde & PTE_P) {
 		pgtab = (pte_t *)p2v(PTE_ADDR(*pde));
 	} else {
-		if (!alloc || (pgtab = (pte_t *)kalloc()) == 0)
+		if (!alloc)
+			return 0;
+
+		pgtab = (pte_t *)kalloc();
+		if (pgtab == 0)
 			return 0;
 		/* Make sure all those PTE_P bits are zero. */
 		memset(pgtab, 0, PGSIZE);
@@ -85,7 +89,8 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
 	a = (char *)PGROUNDDOWN((uint)va);
 	last = (char *)PGROUNDDOWN(((uint)va) + size - 1);
 	for (;;) {
-		if ((pte = walkpgdir(pgdir, a, 1)) == 0)
+		pte = walkpgdir(pgdir, a, 1);
+		if (pte == 0)
 			return -1;
 		if (*pte & PTE_P)
 			panic("remap");
@@ -146,7 +151,8 @@ setupkvm(void)
 	pde_t *pgdir;
 	struct kmap *k;
 
-	if ((pgdir = (pde_t *)kalloc()) == 0)
+	pgdir = (pde_t *)kalloc();
+	if (pgdir == 0)
 		return 0;
 	memset(pgdir, 0, PGSIZE);
 	if (p2v(PHYSTOP) > (void *)DEVSPACE)
@@ -225,7 +231,8 @@ loaduvm(pde_t *pgdir, char *addr, struct inode *ip, uint offset, uint sz)
 	if ((uint) addr % PGSIZE != 0)
 		panic("loaduvm: addr must be page aligned");
 	for (i = 0; i < sz; i += PGSIZE) {
-		if ((pte = walkpgdir(pgdir, addr+i, 0)) == 0)
+		pte = walkpgdir(pgdir, addr+i, 0);
+		if (pte == 0)
 			panic("loaduvm: address should exist");
 		pa = PTE_ADDR(*pte);
 		if (sz - i < PGSIZE)
@@ -347,16 +354,20 @@ copyuvm(pde_t *pgdir, uint sz)
 	uint pa, i, flags;
 	char *mem;
 
-	if ((d = setupkvm()) == 0)
+	d = setupkvm();
+	if (d == 0)
 		return 0;
 	for (i = 0; i < sz; i += PGSIZE) {
-		if ((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
+		pte = walkpgdir(pgdir, (void *) i, 0);
+		if (pte == 0)
 			panic("copyuvm: pte should exist");
 		if (!(*pte & PTE_P))
 			panic("copyuvm: page not present");
 		pa = PTE_ADDR(*pte);
 		flags = PTE_FLAGS(*pte);
-		if ((mem = kalloc()) == 0)
+
+		mem = kalloc();
+		if (mem == 0)
 			goto bad;
 		memmove(mem, (char *)p2v(pa), PGSIZE);
 		if (mappages(d, (void *)i, PGSIZE, v2p(mem), flags) < 0)
