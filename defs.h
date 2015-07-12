@@ -81,8 +81,8 @@ void microdelay(int);
 /* log.c */
 void initlog(void);
 void log_write(struct buf *);
-void begin_trans();
-void commit_trans();
+void begin_trans(void);
+void commit_trans(void);
 
 /* mp.c */
 extern int ismp;
