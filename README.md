@@ -6,4 +6,4 @@ The idea is to have a place to play with xv6. The [original readme][xv6_readme] 
 the repo.
 
 [xv6]:http://pdos.csail.mit.edu/6.828/2012/xv6.html
-[xv6_readme]:/README.XV6
+[xv6_readme]:/Documentation/README.XV6

@@ -171,8 +171,8 @@ UPROGS=\
 	_wc\
 	_zombie\
 
-fs.img: mkfs README.XV6 $(UPROGS)
-	./mkfs fs.img README.XV6 $(UPROGS)
+fs.img: mkfs $(UPROGS)
+	./mkfs fs.img $(UPROGS)
 
 -include *.d
 
