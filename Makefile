@@ -95,7 +95,7 @@ bootblock: bootasm.S bootmain.c
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o bootblock.o bootasm.o bootmain.o
 	$(OBJDUMP) -S bootblock.o > bootblock.asm
 	$(OBJCOPY) -S -O binary -j .text bootblock.o bootblock
-	./sign.pl bootblock
+	perl scripts/sign.pl bootblock
 
 entryother: entryother.S
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c entryother.S
@@ -129,8 +129,8 @@ kernelmemfs: $(MEMFSOBJS) entry.o entryother initcode fs.img
 tags: $(OBJS) entryother.S _init
 	etags *.S *.c
 
-vectors.S: vectors.pl
-	perl vectors.pl > vectors.S
+vectors.S: scripts/vectors.pl
+	perl scripts/vectors.pl > vectors.S
 
 ULIB = ulib.o usys.o printf.o umalloc.o
 
