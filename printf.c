@@ -9,7 +9,7 @@ static void putc(int fd, char c)
 
 static void printint(int fd, int xx, int base, int sgn)
 {
-	static char digits[] = "0123456789ABCDEF";
+	static const char digits[] = "0123456789ABCDEF";
 	char buf[16];
 	int i, neg;
 	uint x;
