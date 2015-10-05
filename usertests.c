@@ -753,7 +753,7 @@ void concreate(void)
 }
 
 /* another concurrent linkunlinkcreate test, to look for deadlocks. */
-void linkunlink()
+void linkunlink(void)
 {
 	int pid, i;
 
@@ -1553,7 +1553,7 @@ void bigargtest(void)
  * what happens when the file system runs out of blocks?
  * answer: balloc panics, so this test is not useful.
  */
-void fsfull()
+void fsfull(void)
 {
 	int nfiles;
 	int fsblocks = 0;
@@ -1609,7 +1609,7 @@ void fsfull()
 }
 
 unsigned long randstate = 1;
-unsigned int rand()
+unsigned int rand(void)
 {
 	randstate = randstate * 1664525 + 1013904223;
 	return randstate;
