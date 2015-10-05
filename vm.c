@@ -46,7 +46,7 @@ void seginit(void)
  * Return the address of the PTE in page table pgdir that corresponds to virtual
  * address va. If alloc!=0, create any required page table pages.
  */
-static pte_t * walkpgdir(pde_t *pgdir, const void *va, int alloc)
+static pte_t *walkpgdir(pde_t *pgdir, const void *va, int alloc)
 {
 	pde_t *pde;
 	pte_t *pgtab;
@@ -142,7 +142,7 @@ static struct kmap {
 };
 
 /* Set up kernel part of a page table. */
-pde_t* setupkvm(void)
+pde_t *setupkvm(void)
 {
 	pde_t *pgdir;
 	struct kmap *k;
@@ -333,7 +333,7 @@ void clearpteu(pde_t *pgdir, char *uva)
 /*
  * Given a parent process's page table, create a copy of it for a child.
  */
-pde_t* copyuvm(pde_t *pgdir, uint sz)
+pde_t *copyuvm(pde_t *pgdir, uint sz)
 {
 	pde_t *d;
 	pte_t *pte;
@@ -367,7 +367,7 @@ bad:
 }
 
 /* Map user virtual address to kernel address. */
-char* uva2ka(pde_t *pgdir, char *uva)
+char *uva2ka(pde_t *pgdir, char *uva)
 {
 	pte_t *pte;
 

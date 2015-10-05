@@ -33,7 +33,7 @@ void pinit(void)
  *
  * Otherwise return 0.
  */
-static struct proc* allocproc(void)
+static struct proc *allocproc(void)
 {
 	struct proc *p;
 	char *sp;

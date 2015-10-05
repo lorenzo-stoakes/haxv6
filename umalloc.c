@@ -44,7 +44,7 @@ void free(void *ap)
 	freep = p;
 }
 
-static Header* morecore(uint nu)
+static Header *morecore(uint nu)
 {
 	char *p;
 	Header *hp;
@@ -60,7 +60,7 @@ static Header* morecore(uint nu)
 	return freep;
 }
 
-void* malloc(uint nbytes)
+void *malloc(uint nbytes)
 {
 	Header *p, *prevp;
 	uint nunits;

@@ -35,7 +35,7 @@ static uchar sum(uchar *addr, int len)
 }
 
 /* Look for an MP structure in the len bytes at addr. */
-static struct mp* mpsearch1(uint a, int len)
+static struct mp *mpsearch1(uint a, int len)
 {
 	uchar *e, *p, *addr;
 
@@ -55,7 +55,7 @@ static struct mp* mpsearch1(uint a, int len)
  * 2) in the last KB of system base memory;
  * 3) in the BIOS ROM between 0xE0000 and 0xFFFFF.
  */
-static struct mp* mpsearch(void)
+static struct mp *mpsearch(void)
 {
 	uchar *bda;
 	uint p;
@@ -84,7 +84,7 @@ static struct mp* mpsearch(void)
  * if correct, check the version.
  * To do: check extended table checksum.
  */
-static struct mpconf* mpconfig(struct mp **pmp)
+static struct mpconf *mpconfig(struct mp **pmp)
 {
 	struct mpconf *conf;
 	struct mp *mp;

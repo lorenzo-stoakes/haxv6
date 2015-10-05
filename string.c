@@ -1,7 +1,7 @@
 #include "types.h"
 #include "x86.h"
 
-void* memset(void *dst, int c, uint n)
+void *memset(void *dst, int c, uint n)
 {
 	if ((int)dst%4 == 0 && n%4 == 0) {
 		c &= 0xFF;
@@ -26,7 +26,7 @@ int memcmp(const void *v1, const void *v2, uint n)
 	return 0;
 }
 
-void* memmove(void *dst, const void *src, uint n)
+void *memmove(void *dst, const void *src, uint n)
 {
 	const char *s;
 	char *d;
@@ -46,7 +46,7 @@ void* memmove(void *dst, const void *src, uint n)
 }
 
 /* memcpy exists to placate GCC. Use memmove. */
-void* memcpy(void *dst, const void *src, uint n)
+void *memcpy(void *dst, const void *src, uint n)
 {
 	return memmove(dst, src, n);
 }
@@ -60,7 +60,7 @@ int strncmp(const char *p, const char *q, uint n)
 	return (uchar)*p - (uchar)*q;
 }
 
-char* strncpy(char *s, const char *t, int n)
+char *strncpy(char *s, const char *t, int n)
 {
 	char *os;
 
@@ -73,7 +73,7 @@ char* strncpy(char *s, const char *t, int n)
 }
 
 /* Like strncpy but guaranteed to NUL-terminate. */
-char* safestrcpy(char *s, const char *t, int n)
+char *safestrcpy(char *s, const char *t, int n)
 {
 	char *os;
 

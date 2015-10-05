@@ -235,7 +235,7 @@ bad:
 	return -1;
 }
 
-static struct inode* create(char *path, short type, short major, short minor)
+static struct inode *create(char *path, short type, short major, short minor)
 {
 	uint off;
 	struct inode *ip, *dp;
