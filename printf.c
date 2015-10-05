@@ -45,11 +45,11 @@ void fprintf(int fd, char *fmt, ...)
 	for (i = 0; fmt[i]; i++) {
 		c = fmt[i] & 0xff;
 		if (state == 0) {
-			if (c == '%') {
+			if (c == '%')
 				state = '%';
-			} else {
+			else
 				putc(fd, c);
-			}
+
 		} else if (state == '%') {
 			if (c == 'd') {
 				printint(fd, *ap, 10, 1);

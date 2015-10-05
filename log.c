@@ -94,9 +94,9 @@ static void read_head(void)
 	int i;
 
 	log.lh.n = lh->n;
-	for (i = 0; i < log.lh.n; i++) {
+	for (i = 0; i < log.lh.n; i++)
 		log.lh.sector[i] = lh->sector[i];
-	}
+
 	brelse(buf);
 }
 
@@ -111,9 +111,9 @@ static void write_head(void)
 	int i;
 
 	hb->n = log.lh.n;
-	for (i = 0; i < log.lh.n; i++) {
+	for (i = 0; i < log.lh.n; i++)
 		hb->sector[i] = log.lh.sector[i];
-	}
+
 	bwrite(buf);
 	brelse(buf);
 }
@@ -129,9 +129,9 @@ static void recover_from_log(void)
 void begin_trans(void)
 {
 	acquire(&log.lock);
-	while (log.busy) {
+	while (log.busy)
 		sleep(&log, &log.lock);
-	}
+
 	log.busy = 1;
 	release(&log.lock);
 }

@@ -770,13 +770,12 @@ void linkunlink()
 
 	for (i = 0; i < 100; i++) {
 		x = x * 1103515245 + 12345;
-		if ((x % 3) == 0) {
+		if ((x % 3) == 0)
 			close(open("x", O_RDWR | O_CREATE));
-		} else if ((x % 3) == 1) {
+		else if ((x % 3) == 1)
 			link("cat", "x");
-		} else {
+		else
 			unlink("x");
-		}
 	}
 
 	if (pid)
