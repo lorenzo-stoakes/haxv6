@@ -59,7 +59,7 @@ found:
 	sp = p->kstack + KSTACKSIZE;
 
 	/* Leave room for trap frame. */
-	sp -= sizeof *p->tf;
+	sp -= sizeof(*p->tf);
 	p->tf = (struct trapframe *)sp;
 
 	/*
@@ -69,9 +69,9 @@ found:
 	sp -= 4;
 	*(uint *)sp = (uint)trapret;
 
-	sp -= sizeof *p->context;
+	sp -= sizeof(*p->context);
 	p->context = (struct context *)sp;
-	memset(p->context, 0, sizeof *p->context);
+	memset(p->context, 0, sizeof(*p->context));
 	p->context->eip = (uint)forkret;
 
 	return p;
