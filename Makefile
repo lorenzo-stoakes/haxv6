@@ -139,7 +139,7 @@ tags: $(OBJS) arch/x86/boot/entryother.S _init
 vectors.S: scripts/vectors.pl
 	perl scripts/vectors.pl > vectors.S
 
-ULIB = usr/ulib.o usr/usys.o usr/printf.o usr/umalloc.o
+ULIB = usr/ulib/ulib.o usr/ulib/usys.o usr/ulib/printf.o usr/ulib/umalloc.o
 
 _%: usr/%.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
@@ -149,7 +149,7 @@ _%: usr/%.o $(ULIB)
 _forktest: usr/forktest.o $(ULIB)
 	# forktest has less library code linked in - needs to be small
 	# in order to be able to max out the proc table.
-	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _forktest usr/forktest.o usr/ulib.o usr/usys.o
+	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _forktest usr/forktest.o usr/ulib/ulib.o usr/ulib/usys.o
 	$(OBJDUMP) -S _forktest > forktest.asm
 
 mkfs: scripts/mkfs.c include/fs.h
