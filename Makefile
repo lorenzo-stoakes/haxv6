@@ -94,7 +94,9 @@ bootblock: arch/x86/boot/bootasm.S arch/x86/boot/bootmain.c
 	$(CC) $(CFLAGS) -fno-pic -O -nostdinc -I. -c arch/x86/boot/bootmain.c
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c arch/x86/boot/bootasm.S
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o bootblock.o bootasm.o bootmain.o
+ifdef GEN_ASM
 	$(OBJDUMP) -S bootblock.o > bootblock.asm
+endif
 	$(OBJCOPY) -S -O binary -j .text bootblock.o bootblock
 	perl scripts/sign.pl bootblock
 
@@ -102,21 +104,29 @@ entryother: arch/x86/boot/entryother.S
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c arch/x86/boot/entryother.S
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7000 -o bootblockother.o entryother.o
 	$(OBJCOPY) -S -O binary -j .text bootblockother.o entryother
+ifdef GEN_ASM
 	$(OBJDUMP) -S bootblockother.o > entryother.asm
+endif
 
 initcode: arch/x86/boot/initcode.S
 	$(CC) $(CFLAGS) -nostdinc -I. -c arch/x86/boot/initcode.S
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0 -o initcode.out initcode.o
 	$(OBJCOPY) -S -O binary initcode.out initcode
+ifdef GEN_ASM
 	$(OBJDUMP) -S initcode.o > initcode.asm
+endif
 
 entry.o: arch/x86/boot/entry.S
 	$(CC) $(CFLAGS) -c -o $@ arch/x86/boot/entry.S #$^
 
 kernel.img: $(OBJS) entry.o entryother initcode kernel/kernel.ld
 	$(LD) $(LDFLAGS) -T kernel/kernel.ld -o kernel.img entry.o $(OBJS) -b binary initcode entryother
+ifdef GEN_ASM
 	$(OBJDUMP) -S kernel.img > kernel.asm
+endif
+ifdef GEN_SYM
 	$(OBJDUMP) -t kernel.img | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > kernel.sym
+endif
 
 memide.o: drivers/ide/memide.c
 	$(CC) $(CFLAGS) -c -o $@ $^
@@ -130,8 +140,12 @@ memide.o: drivers/ide/memide.c
 MEMFSOBJS = $(filter-out ide.o,$(OBJS)) memide.o
 kernelmemfs.img: $(MEMFSOBJS) entry.o entryother initcode fs.img
 	$(LD) $(LDFLAGS) -Ttext 0x100000 -e main -o kernelmemfs.img entry.o  $(MEMFSOBJS) -b binary initcode entryother fs.img
+ifdef GEN_ASM
 	$(OBJDUMP) -S kernelmemfs.img > kernelmemfs.asm
+endif
+ifdef GEN_SYM
 	$(OBJDUMP) -t kernelmemfs.img | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > kernelmemfs.sym
+endif
 
 tags: $(OBJS) arch/x86/boot/entryother.S _init
 	find . -name '*.[cS]' | xargs etags
@@ -143,14 +157,20 @@ ULIB = usr/ulib/ulib.o usr/ulib/usys.o usr/ulib/printf.o usr/ulib/umalloc.o
 
 _%: usr/%.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
+ifdef GEN_ASM
 	$(OBJDUMP) -S $@ > $*.asm
+endif
+ifdef GEN_SYM
 	$(OBJDUMP) -t $@ | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $*.sym
+endif
 
 _forktest: usr/forktest.o $(ULIB)
 	# forktest has less library code linked in - needs to be small
 	# in order to be able to max out the proc table.
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _forktest usr/forktest.o usr/ulib/ulib.o usr/ulib/usys.o
+ifdef GEN_ASM
 	$(OBJDUMP) -S _forktest > forktest.asm
+endif
 
 mkfs: scripts/mkfs.c include/fs.h
 	gcc -Werror -Wall -o mkfs scripts/mkfs.c
