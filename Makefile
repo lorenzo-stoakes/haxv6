@@ -150,6 +150,10 @@ endif
 tags: $(OBJS) arch/x86/boot/entryother.S _init
 	find . -name '*.[cS]' | xargs etags
 
+cscope:
+	find . -iname '*.[cSh]' > cscope.files
+	cscope -b -q -k
+
 vectors.S: scripts/vectors.pl
 	perl scripts/vectors.pl > vectors.S
 
@@ -209,6 +213,7 @@ clean:
 	*.sym vectors.S bootblock entryother \
 	initcode initcode.out kernel.img xv6.img fs.img kernelmemfs.img mkfs \
 	.gdbinit usr/*.[od] \
+	cscope* \
 	$(UPROGS)
 
 # run in emulators
