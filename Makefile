@@ -111,7 +111,7 @@ initcode: arch/x86/boot/initcode.S
 	$(OBJDUMP) -S initcode.o > initcode.asm
 
 entry.o: arch/x86/boot/entry.S
-	$(CC) $(CFLAGS) -c -o $@ $^
+	$(CC) $(CFLAGS) -c -o $@ arch/x86/boot/entry.S #$^
 
 kernel.img: $(OBJS) entry.o entryother initcode kernel/kernel.ld
 	$(LD) $(LDFLAGS) -T kernel/kernel.ld -o kernel.img entry.o $(OBJS) -b binary initcode entryother
